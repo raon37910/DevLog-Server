@@ -5,6 +5,7 @@ plugins {
 
     id("checkstyle")
     jacoco
+    id("org.sonarqube") version "6.0.1.5171"
 }
 
 group = "com.raon"
@@ -26,6 +27,14 @@ checkstyle {
     configProperties = mapOf("suppressionFile" to "${project.rootDir}/checkstyle/naver-checkstyle-suppressions.xml")
     // 규칙 위반 시 빌드 실패 처리
     isIgnoreFailures = false
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "raon37910_DevLog-Server")
+        property("sonar.organization", "raon37910")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
 
 dependencies {
