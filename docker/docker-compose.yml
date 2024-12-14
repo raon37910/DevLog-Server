@@ -1,0 +1,16 @@
+version: '3.8' # Docker Compose 버전
+
+services:
+  devlog-mysql:
+    image: mysql:8.0
+    container_name: devlog-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: qwer1234
+      MYSQL_DATABASE: devlog
+      MYSQL_USER: local
+      MYSQL_PASSWORD: local
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql # 데이터를 저장할 볼륨 마운팅
