@@ -40,10 +40,10 @@ sonar {
 dependencies {
     // MVC
     implementation("org.springframework.boot:spring-boot-starter-web")
-    // JDBC
-//    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    // MyBatis
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
     // MySQL
-//    runtimeOnly("com.mysql:mysql-connector-j")
+    runtimeOnly("com.mysql:mysql-connector-j")
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
