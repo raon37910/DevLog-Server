@@ -37,7 +37,7 @@ checkstyle {
         include("**/*.java") // Java 파일만 포함
         exclude("**/*.kt")  // Kotlin 파일은 제외
     }
-    
+
     tasks.checkstyleTest {
         include("**/*.java") // 테스트 Java 파일만 포함
         exclude("**/*.kt")  // 테스트 Kotlin 파일은 제외
@@ -62,6 +62,10 @@ dependencies {
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Test Container
+    testImplementation("org.testcontainers:testcontainers:1.20.4")
+    testImplementation("org.testcontainers:junit-jupiter:1.20.4")
+    testImplementation("org.testcontainers:mysql:1.20.4")
     // API Docs
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.restdocs:spring-restdocs-asciidoctor")
