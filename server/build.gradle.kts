@@ -32,6 +32,16 @@ checkstyle {
     configProperties = mapOf("suppressionFile" to "${project.rootDir}/checkstyle/naver-checkstyle-suppressions.xml")
     // 규칙 위반 시 빌드 실패 처리
     isIgnoreFailures = false
+
+    tasks.checkstyleMain {
+        include("**/*.java") // Java 파일만 포함
+        exclude("**/*.kt")  // Kotlin 파일은 제외
+    }
+    
+    tasks.checkstyleTest {
+        include("**/*.java") // 테스트 Java 파일만 포함
+        exclude("**/*.kt")  // 테스트 Kotlin 파일은 제외
+    }
 }
 
 sonar {

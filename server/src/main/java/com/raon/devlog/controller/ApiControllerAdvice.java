@@ -16,19 +16,20 @@ public class ApiControllerAdvice {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@ExceptionHandler(DevlogException.class)
-	public ResponseEntity<ApiResponse<?>> handleDevlogException(DevlogException e) {
-		switch (e.getErrorType().getLogLevel()) {
-			case ERROR -> log.error("CoreException : {}", e.getMessage(), e);
-			case WARN -> log.warn("CoreException : {}", e.getMessage(), e);
-			default -> log.info("CoreException : {}", e.getMessage(), e);
+	public ResponseEntity<ApiResponse<?>> handleDevlogException(DevlogException exception) {
+		switch (exception.getErrorType().getLogLevel()) {
+			case ERROR -> log.error("CoreException : {}", exception.getMessage(), exception);
+			case WARN -> log.warn("CoreException : {}", exception.getMessage(), exception);
+			default -> log.info("CoreException : {}", exception.getMessage(), exception);
 		}
 
-		return new ResponseEntity<>(ApiResponse.error(e.getErrorType(), e.getData()), e.getErrorType().getStatus());
+		return new ResponseEntity<>(ApiResponse.error(exception.getErrorType(), exception.getData()),
+			exception.getErrorType().getStatus());
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ApiResponse<?>> handleException(Exception e) {
-		log.error("Exception : {}", e.getMessage(), e);
+	public ResponseEntity<ApiResponse<?>> handleException(Exception exception) {
+		log.error("Exception : {}", exception.getMessage(), exception);
 		return new ResponseEntity<>(ApiResponse.error(ErrorType.DEFAULT_ERROR), ErrorType.DEFAULT_ERROR.getStatus());
 	}
 }
