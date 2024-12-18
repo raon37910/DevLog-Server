@@ -124,14 +124,14 @@ tasks.jacocoTestCoverageVerification {
             limit {
                 counter = "BRANCH"
                 value = "COVEREDRATIO"
-                minimum = "0.00".toBigDecimal()
+                minimum = "0.50".toBigDecimal()
             }
 
             // 라인 커버리지를 최소한 30% 만족시켜야 한다.
             limit {
                 counter = "LINE"
                 value = "COVEREDRATIO"
-                minimum = "0.00".toBigDecimal()
+                minimum = "0.50".toBigDecimal()
             }
 
             // 빈 줄을 제외한 코드의 라인수를 최대 2000라인으로 제한한다.
@@ -141,10 +141,13 @@ tasks.jacocoTestCoverageVerification {
                 maximum = "2000".toBigDecimal()
             }
 
-            // 커버리지 체크를 제외할 클래스들
+            // 커버리지 측정 제외 클래스들
             excludes = listOf(
-//                    "*.test.*",
-//                    "*.Kotlin*"
+                "com.raon.devlog.config.*",
+                "com.raon.devlog.mapper.*",
+                "com.raon.devlog.support.*",
+                "com.raon.devlog.controller.ApiControllerAdvice",
+                "com.raon.devlog.ServerApplication"
             )
         }
     }
