@@ -3,6 +3,6 @@ POST localhost:8080/api/users
 Content-Type: application/json
 
 {
-  "email": "test@test.com",
+  "email": "test4",
   "password": "qwer1234"
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.raon.devlog.mapper.user.UserMapper">
+
+    <insert id="create" parameterType="com.raon.devlog.mapper.user.UserEntity">
+        INSERT INTO User (email, password, createTime)
+        VALUES (#{email}, #{password}, #{createTime})
+    </insert>
+
+    <select id="findByEmail" resultType="com.raon.devlog.mapper.user.UserEntity">
+        SELECT id,
+               email,
+               password,
+               name,
+               description,
+               profileImageUrl,
+               createTime,
+               updateTime
+        FROM User
+        WHERE email = #{email};
+    </select>
+
+    <select id="existsByEmail" resultType="boolean">
+        SELECT COUNT(id) > 0 AS user_exists
+        FROM User
+        WHERE email = #{email}
+    </select>
+
+</mapper>
