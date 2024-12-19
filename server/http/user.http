@@ -1,0 +1,8 @@
+# 회원가입
+POST localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "qwer1234"
+}

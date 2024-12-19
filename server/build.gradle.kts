@@ -55,6 +55,9 @@ sonar {
 dependencies {
     // MVC
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    // Security
+    implementation("org.springframework.boot:spring-boot-starter-security")
     // MyBatis
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
     // MySQL
@@ -62,6 +65,8 @@ dependencies {
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Security Test
+    testImplementation("org.springframework.security:spring-security-test")
     // Test Container
     testImplementation("org.testcontainers:testcontainers:1.20.4")
     testImplementation("org.testcontainers:junit-jupiter:1.20.4")
