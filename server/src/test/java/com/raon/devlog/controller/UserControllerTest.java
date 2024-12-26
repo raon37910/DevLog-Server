@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,37 +42,65 @@ public class UserControllerTest {
 	private UserService userService;
 
 	@BeforeAll
-	// FIXME 별도 분리 가능함.
 	static void setup(@Autowired JdbcTemplate jdbcTemplate) {
-		System.out.println("테이블 생성 시작");
-		try {
-			// 테이블 생성 SQL 실행
-			String createTableSql = """
-					CREATE TABLE IF NOT EXISTS `User`
-					(
-					    `id`              INT PRIMARY KEY AUTO_INCREMENT,
-					    `email`           VARCHAR(45),
-					    `password`        VARCHAR(200),
-					    `name`            VARCHAR(100),
-					    `description`     VARCHAR(100),
-					    `profileImageUrl` VARCHAR(200),
-					    `createTime`      DATETIME,
-					    `updateTime`      DATETIME
-					);
-				""";
+		// 테이블 생성 SQL 실행
+		String createUserTable = """
+							CREATE TABLE IF NOT EXISTS `User`
+							(
+								`id`              INT PRIMARY KEY AUTO_INCREMENT,
+								`email`           VARCHAR(45),
+								`password`        VARCHAR(200),
+								`name`            VARCHAR(100),
+								`description`     VARCHAR(100),
+								`profileImageUrl` VARCHAR(200),
+								`createTime`      DATETIME,
+								`updateTime`      DATETIME
+							);
+			""";
 
-			jdbcTemplate.execute(createTableSql);
-			System.out.println("테이블 생성 완료");
-		} catch (Exception e) {
-			System.out.println("테이블 생성 중 문제가 발생");
-			e.printStackTrace();
-			throw e;
-		}
+		String createRoleTable = """
+				CREATE TABLE IF NOT EXISTS `Role`
+			 (
+			     `id`          INT PRIMARY KEY AUTO_INCREMENT,
+			     `name`        VARCHAR(45),
+			     `description` VARCHAR(100),
+			     `createTime`  DATETIME,
+			     `updateTime`  DATETIME
+			 );
+			""";
+
+		String createUserRoleTable = """
+				CREATE TABLE `UserRole`
+			 (
+			     `id`         INT PRIMARY KEY AUTO_INCREMENT,
+			     `userId`     INT,
+			     `roleId`     INT,
+			     `createTime` DATETIME,
+			     `updateTime` DATETIME
+			 );
+			""";
+
+		jdbcTemplate.execute(createUserTable);
+		jdbcTemplate.execute(createRoleTable);
+		jdbcTemplate.execute(createUserRoleTable);
+	}
+
+	@BeforeEach
+	void defaultDataSetup(@Autowired JdbcTemplate jdbcTemplate) {
+		String defaultRoleSql = """
+				INSERT INTO Role (name, description, createTime, updateTime)
+				VALUES
+					('ROLE_ADMIN', '어드민', NOW(), NOW()),
+					('ROLE_USER', '일반유저', NOW(), NOW());
+			""";
+
+		jdbcTemplate.execute(defaultRoleSql);
 	}
 
 	@AfterEach
-		// FIXME 별도 분리 가능함.
 	void cleanup() {
+		jdbcTemplate.execute("DELETE FROM UserRole");
+		jdbcTemplate.execute("DELETE FROM Role");
 		jdbcTemplate.execute("DELETE FROM User");
 	}
 
