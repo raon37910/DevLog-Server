@@ -7,32 +7,36 @@ import org.springframework.stereotype.Service;
 
 import com.raon.devlog.domain.auth.TokenAppender;
 import com.raon.devlog.domain.auth.TokenProvider;
+import com.raon.devlog.domain.auth.TokenReader;
 import com.raon.devlog.domain.user.UserReader;
 import com.raon.devlog.mapper.user.RoleEntity;
 import com.raon.devlog.mapper.user.UserEntity;
 import com.raon.devlog.service.auth.model.SigninRequestInfo;
 import com.raon.devlog.service.auth.model.Token;
+import com.raon.devlog.service.auth.model.TokenClaim;
 import com.raon.devlog.support.error.DevlogException;
 import com.raon.devlog.support.error.ErrorType;
 
 @Service
 public class AuthService {
-	// TODO 클래스 포함 관계가 너무 많아지는데
 	private final UserReader userReader;
 	private final PasswordEncoder passwordEncoder;
 	private final TokenProvider tokenProvider;
 	private final TokenAppender tokenAppender;
+	private final TokenReader tokenReader;
 
 	public AuthService(
 		UserReader userReader,
 		PasswordEncoder passwordEncoder,
 		TokenProvider tokenProvider,
-		TokenAppender tokenAppender
+		TokenAppender tokenAppender,
+		TokenReader tokenReader
 	) {
 		this.userReader = userReader;
 		this.passwordEncoder = passwordEncoder;
 		this.tokenProvider = tokenProvider;
 		this.tokenAppender = tokenAppender;
+		this.tokenReader = tokenReader;
 	}
 
 	public Token generateToken(SigninRequestInfo signinRequestInfo) {
@@ -46,9 +50,25 @@ public class AuthService {
 			throw new DevlogException(ErrorType.AUTHENTICATION_ERROR);
 		}
 
-		final String accessToken = tokenProvider.generateAccessToken(foundUser.email(), userRoles);
-		final String refreshToken = tokenProvider.generateRefreshToken(foundUser.email(), userRoles);
+		TokenClaim tokenClaim = new TokenClaim(foundUser.email(), userRoles);
+
+		final String accessToken = tokenProvider.generateAccessToken(tokenClaim);
+		final String refreshToken = tokenProvider.generateRefreshToken(tokenClaim);
 		final Token token = new Token(accessToken, refreshToken);
+		tokenAppender.appendToken(token);
+
+		return token;
+	}
+
+	public Token refreshToken(String accessToken) {
+		String refreshToken = tokenReader.getRefreshToken(accessToken)
+			.orElseThrow(() -> new DevlogException(ErrorType.AUTHENTICATION_ERROR));
+
+		TokenClaim tokenClaim = tokenProvider.parseToken(refreshToken);
+
+		final String newAccessToken = tokenProvider.generateAccessToken(tokenClaim);
+		final String newRefreshToken = tokenProvider.generateRefreshToken(tokenClaim);
+		final Token token = new Token(newAccessToken, newRefreshToken);
 		tokenAppender.appendToken(token);
 
 		return token;

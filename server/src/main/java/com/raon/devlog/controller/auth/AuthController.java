@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raon.devlog.controller.auth.request.SigninRequest;
+import com.raon.devlog.controller.auth.request.TokenRefreshRequest;
 import com.raon.devlog.controller.auth.response.SinginResponse;
+import com.raon.devlog.controller.auth.response.TokenRefreshResponse;
 import com.raon.devlog.service.auth.AuthService;
 import com.raon.devlog.service.auth.model.Token;
 import com.raon.devlog.support.response.ApiResponse;
@@ -33,4 +35,14 @@ public class AuthController {
 			new SinginResponse(token.accessToken(), token.refreshToken())
 		);
 	}
+
+	@PostMapping("/token/refresh")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<TokenRefreshResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
+		Token token = authService.refreshToken(request.accessToken());
+		return ApiResponse.success(
+			new TokenRefreshResponse(token.accessToken(), token.refreshToken())
+		);
+	}
+
 }
