@@ -67,7 +67,7 @@ public class AuthControllerTest {
 			""";
 
 		String createUserRoleTable = """
-				CREATE TABLE `UserRole`
+				CREATE TABLE IF NOT EXISTS `UserRole`
 			 (
 			     `id`         INT PRIMARY KEY AUTO_INCREMENT,
 			     `userId`     INT,
