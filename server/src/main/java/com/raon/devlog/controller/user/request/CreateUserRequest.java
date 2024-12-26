@@ -1,4 +1,4 @@
-package com.raon.devlog.controller.request.user;
+package com.raon.devlog.controller.user.request;
 
 import com.raon.devlog.service.user.CreateUserInfo;
 

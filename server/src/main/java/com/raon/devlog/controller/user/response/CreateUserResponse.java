@@ -1,4 +1,4 @@
-package com.raon.devlog.controller.response.user;
+package com.raon.devlog.controller.user.response;
 
 import java.time.LocalDateTime;
 
