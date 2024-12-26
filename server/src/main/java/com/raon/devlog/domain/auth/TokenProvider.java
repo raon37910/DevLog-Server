@@ -1,10 +1,12 @@
 package com.raon.devlog.domain.auth;
 
-import java.util.List;
+import com.raon.devlog.service.auth.model.TokenClaim;
 
 public interface TokenProvider {
 
-	String generateAccessToken(String email, List<String> roles);
+	String generateAccessToken(TokenClaim tokenClaim);
 
-	String generateRefreshToken(String email, List<String> roles);
+	String generateRefreshToken(TokenClaim tokenClaim);
+
+	TokenClaim parseToken(String token);
 }
