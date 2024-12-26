@@ -29,4 +29,11 @@
         WHERE email = #{email}
     </select>
 
+    <select id="getRoles" resultType="com.raon.devlog.mapper.user.RoleEntity">
+        SELECT R.id, R.name, R.description, R.createTime, R.updateTime
+        FROM Role R
+                 JOIN UserRole UR on R.id = UR.roleId
+                 JOIN User U on U.id = UR.userId
+        WHERE UR.userId = #{userId};
+    </select>
 </mapper>
