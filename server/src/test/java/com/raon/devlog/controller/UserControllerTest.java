@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
+import com.raon.devlog.container.TestContainer;
 import com.raon.devlog.service.user.CreateUserInfo;
 import com.raon.devlog.service.user.UserService;
 
@@ -26,6 +28,7 @@ import com.raon.devlog.service.user.UserService;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@ExtendWith(TestContainer.class)
 public class UserControllerTest {
 
 	@Autowired
