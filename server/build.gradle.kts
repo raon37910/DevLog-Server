@@ -58,10 +58,16 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     // Security
     implementation("org.springframework.boot:spring-boot-starter-security")
+    // Jwt
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-gson:0.12.6")
     // MyBatis
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
     // MySQL
     runtimeOnly("com.mysql:mysql-connector-j")
+    // Redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -166,6 +172,8 @@ tasks.jacocoTestCoverageVerification {
                 "com.raon.devlog.mapper.*",
                 "com.raon.devlog.support.*",
                 "com.raon.devlog.controller.ApiControllerAdvice",
+                "com.raon.devlog.controller.*Request",
+                "com.raon.devlog.controller.*Response",
                 "com.raon.devlog.ServerApplication"
             )
         }
