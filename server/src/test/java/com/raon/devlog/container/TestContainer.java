@@ -23,8 +23,9 @@ public class TestContainer implements BeforeAllCallback {
 			.withExposedPorts(REDIS_PORT);
 		redis.start();
 		System.setProperty("spring.data.redis.host", redis.getHost());
-		System.setProperty("spring.data.redis.port", String.valueOf(redis.getMappedPort(REDIS_PORT
-		)));
+		System.setProperty("spring.data.redis.port", String.valueOf(redis.getMappedPort(REDIS_PORT))
+		);
+		System.setProperty("spring.data.redis.timeout", "1000ms");
 
 		mysql = new MySQLContainer<>(DockerImageName.parse(MYSQL_IMAGE))
 			.withDatabaseName(MYSQL_DB_NAME)
