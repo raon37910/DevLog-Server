@@ -22,6 +22,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.raon.devlog.container.TestContainer;
+import com.raon.devlog.service.auth.AuthService;
+import com.raon.devlog.service.auth.model.SigninRequestInfo;
+import com.raon.devlog.service.auth.model.Token;
 import com.raon.devlog.service.user.CreateUserInfo;
 import com.raon.devlog.service.user.UserService;
 
@@ -37,6 +40,9 @@ public class AuthControllerTest {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private AuthService authService;
 
 	@BeforeAll
 	static void setupTable(@Autowired JdbcTemplate jdbcTemplate) {
@@ -197,5 +203,31 @@ public class AuthControllerTest {
 				fieldWithPath("error.message").type(JsonFieldType.STRING).description("validation error has occurred"),
 				fieldWithPath("error.data.password").type(JsonFieldType.STRING)
 					.description("비밀번호는 8자 이상, 20자 이하 여야 합니다"))));
+	}
+
+	@Test
+	@DisplayName("토큰 재발급 API 성공")
+	void refreshTokenSuccess() throws Exception {
+		userService.createUser(new CreateUserInfo("test@test.com", "qwer1234"));
+		Token token = authService.generateToken(new SigninRequestInfo("test@test.com", "qwer1234"));
+
+		String refreshTokenRequest = """
+				{
+					"accessToken": "%s"
+				}
+			""".formatted(token.accessToken());
+
+		System.out.println(refreshTokenRequest);
+
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/token/refresh")
+				.content(refreshTokenRequest)
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is2xxSuccessful())
+			.andDo(MockMvcRestDocumentationWrapper.document("AUTH API", responseFields(
+				fieldWithPath("result").type(JsonFieldType.STRING)
+					.description("The result of the operation (e.g., SUCCESS)"),
+				fieldWithPath("data.accessToken").type(JsonFieldType.STRING).description("AccessToken"),
+				fieldWithPath("data.refreshToken").type(JsonFieldType.STRING).description("RefreshToken"),
+				fieldWithPath("error").type(JsonFieldType.NULL).description("Error information (null if no error)"))));
 	}
 }
