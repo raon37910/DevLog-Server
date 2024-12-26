@@ -14,3 +14,12 @@ services:
       - "3306:3306"
     volumes:
       - ./docker/mysql/data:/var/lib/mysql # 데이터를 저장할 볼륨 마운팅
+
+  redis:
+    image: redis:7.0
+    container_name: devlog-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/redis/data:/data # 데이터를 저장할 볼륨 마운팅
