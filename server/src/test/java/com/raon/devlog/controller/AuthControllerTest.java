@@ -110,7 +110,6 @@ public class AuthControllerTest {
 				"password": "qwer1234"
 			}
 			""";
-
 		userService.createUser(new CreateUserInfo("test@test.com", "qwer1234"));
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/token")
@@ -121,7 +120,7 @@ public class AuthControllerTest {
 				fieldWithPath("result").type(JsonFieldType.STRING)
 					.description("The result of the operation (e.g., SUCCESS)"),
 				fieldWithPath("data.accessToken").type(JsonFieldType.STRING).description("AccessToken"),
-				fieldWithPath("data.refreshToken").type(JsonFieldType.STRING).description("AccessToken"),
+				fieldWithPath("data.refreshToken").type(JsonFieldType.STRING).description("RefreshToken"),
 				fieldWithPath("error").type(JsonFieldType.NULL).description("Error information (null if no error)"))));
 	}
 
