@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.raon.devlog.mapper.article.category.CategoryMapper">
+    <insert id="insert" parameterType="com.raon.devlog.mapper.article.category.CategoryEntity">
+        INSERT INTO Category(name, createTime)
+        VALUES (#{name}, #{createTime})
+    </insert>
+
+    <select id="existsByName">
+        SELECT COUNT(id) > 0 AS category_exists
+        FROM Category
+        WHERE name = #{name}
+    </select>
+
+    <select id="findBy">
+        SELECT id, name, createTime, updateTime
+        FROM Category
+        WHERE name = #{name}
+    </select>
+</mapper>
+

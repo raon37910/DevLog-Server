@@ -1,4 +1,23 @@
 # 게시글 생성
 POST localhost:8080/api/admin/articles
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBnb29nbGUuY29tIiwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJpYXQiOjE3MzUyNzczNjUsImV4cCI6MTczNTI4MDk2NX0.dfPQhere5hq0J7cQAJlggkkfQUk4uZC-PXMSuw2ewod6tuxglDFhrmgJ2LrfzwbSFThNYndPoAYdrWqYHVOUAg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBnb29nbGUuY29tIiwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJpYXQiOjE3MzUzODA5NzIsImV4cCI6MTczNTM4NDU3Mn0.L0tEkmv1S2wcfB3DzwJ1u1v53wSUQZxyYpwZzPWF8LjxtZxzHeTutR7CKaLQ3pvGrGGae-jkRRB8VTDp0FP6bg
 Content-Type: application/json
+
+{
+  "title": "예제 제목",
+  "author": "작성자 이름",
+  "description": "이것은 예제 설명입니다.",
+  "link": "https://example.com",
+  "category": "기술",
+  "tags": [
+    "태그11",
+    "태그2",
+    "태그11",
+    "태그2",
+    "태그11",
+    "태그2",
+    "태그11",
+    "태그2",
+    "태그3"
+  ]
+}

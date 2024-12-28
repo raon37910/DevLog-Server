@@ -32,6 +32,7 @@ CREATE TABLE `Article`
 (
     `id`          INT PRIMARY KEY AUTO_INCREMENT,
     `title`       VARCHAR(100),
+    `author`      VARCHAR(100),
     `description` VARCHAR(100),
     `link`        VARCHAR(200),
     `views`       INT,
@@ -92,9 +93,6 @@ ALTER TABLE `UserRole`
 
 ALTER TABLE `Article`
     ADD FOREIGN KEY (`categoryId`) REFERENCES `Category` (`id`);
-
-ALTER TABLE `Article`
-    ADD FOREIGN KEY (`userId`) REFERENCES `User` (`id`);
 
 ALTER TABLE `PostLike`
     ADD FOREIGN KEY (`userId`) REFERENCES `User` (`id`);
