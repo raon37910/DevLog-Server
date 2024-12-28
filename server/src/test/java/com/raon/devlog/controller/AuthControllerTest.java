@@ -3,9 +3,6 @@ package com.raon.devlog.controller;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,10 +11,10 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
@@ -28,6 +25,8 @@ import com.raon.devlog.service.auth.model.Token;
 import com.raon.devlog.service.user.CreateUserInfo;
 import com.raon.devlog.service.user.UserService;
 
+@Sql(scripts = "/setup.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -43,69 +42,6 @@ public class AuthControllerTest {
 
 	@Autowired
 	private AuthService authService;
-
-	@BeforeAll
-	static void setupTable(@Autowired JdbcTemplate jdbcTemplate) {
-		// 테이블 생성 SQL 실행
-		String createUserTable = """
-							CREATE TABLE IF NOT EXISTS `User`
-							(
-								`id`              INT PRIMARY KEY AUTO_INCREMENT,
-								`email`           VARCHAR(45),
-								`password`        VARCHAR(200),
-								`name`            VARCHAR(100),
-								`description`     VARCHAR(100),
-								`profileImageUrl` VARCHAR(200),
-								`createTime`      DATETIME,
-								`updateTime`      DATETIME
-							);
-			""";
-
-		String createRoleTable = """
-				CREATE TABLE IF NOT EXISTS `Role`
-			 (
-			     `id`          INT PRIMARY KEY AUTO_INCREMENT,
-			     `name`        VARCHAR(45),
-			     `description` VARCHAR(100),
-			     `createTime`  DATETIME,
-			     `updateTime`  DATETIME
-			 );
-			""";
-
-		String createUserRoleTable = """
-				CREATE TABLE IF NOT EXISTS `UserRole`
-			 (
-			     `id`         INT PRIMARY KEY AUTO_INCREMENT,
-			     `userId`     INT,
-			     `roleId`     INT,
-			     `createTime` DATETIME,
-			     `updateTime` DATETIME
-			 );
-			""";
-
-		jdbcTemplate.execute(createUserTable);
-		jdbcTemplate.execute(createRoleTable);
-		jdbcTemplate.execute(createUserRoleTable);
-	}
-
-	@BeforeEach
-	void defaultDataSetup(@Autowired JdbcTemplate jdbcTemplate) {
-		String defaultRoleSql = """
-				INSERT INTO Role (name, description, createTime, updateTime)
-				VALUES
-					('ROLE_ADMIN', '어드민', NOW(), NOW()),
-					('ROLE_USER', '일반유저', NOW(), NOW());
-			""";
-
-		jdbcTemplate.execute(defaultRoleSql);
-	}
-
-	@AfterEach
-	void cleanup(@Autowired JdbcTemplate jdbcTemplate) {
-		jdbcTemplate.execute("DELETE FROM UserRole");
-		jdbcTemplate.execute("DELETE FROM Role");
-		jdbcTemplate.execute("DELETE FROM User");
-	}
 
 	@Test
 	@DisplayName("로그인 API - 성공")

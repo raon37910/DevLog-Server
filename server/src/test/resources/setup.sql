@@ -1,4 +1,4 @@
-CREATE TABLE `User`
+CREATE TABLE IF NOT EXISTS `User`
 (
     `id`              INT PRIMARY KEY AUTO_INCREMENT,
     `email`           VARCHAR(45),
@@ -10,7 +10,7 @@ CREATE TABLE `User`
     `updateTime`      DATETIME
 );
 
-CREATE TABLE `UserRole`
+CREATE TABLE IF NOT EXISTS `UserRole`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `userId`     INT,
@@ -19,7 +19,7 @@ CREATE TABLE `UserRole`
     `updateTime` DATETIME
 );
 
-CREATE TABLE `Role`
+CREATE TABLE IF NOT EXISTS `Role`
 (
     `id`          INT PRIMARY KEY AUTO_INCREMENT,
     `name`        VARCHAR(45),
@@ -28,7 +28,7 @@ CREATE TABLE `Role`
     `updateTime`  DATETIME
 );
 
-CREATE TABLE `Article`
+CREATE TABLE IF NOT EXISTS `Article`
 (
     `id`          INT PRIMARY KEY AUTO_INCREMENT,
     `title`       VARCHAR(100),
@@ -41,7 +41,7 @@ CREATE TABLE `Article`
     `userId`      INT
 );
 
-CREATE TABLE `PostLike`
+CREATE TABLE IF NOT EXISTS `PostLike`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `userId`     INT,
@@ -50,7 +50,7 @@ CREATE TABLE `PostLike`
     `updateTime` DATETIME
 );
 
-CREATE TABLE `BookMark`
+CREATE TABLE IF NOT EXISTS `BookMark`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `userId`     INT,
@@ -59,7 +59,7 @@ CREATE TABLE `BookMark`
     `updateTime` DATETIME
 );
 
-CREATE TABLE `Category`
+CREATE TABLE IF NOT EXISTS `Category`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `name`       VARCHAR(45),
@@ -67,7 +67,7 @@ CREATE TABLE `Category`
     `updateTime` DATETIME
 );
 
-CREATE TABLE `ArticleTag`
+CREATE TABLE IF NOT EXISTS `ArticleTag`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `articleId`  INT,
@@ -76,7 +76,7 @@ CREATE TABLE `ArticleTag`
     `updateTime` DATETIME
 );
 
-CREATE TABLE `Tag`
+CREATE TABLE IF NOT EXISTS `Tag`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `name`       VARCHAR(45),
@@ -113,3 +113,7 @@ ALTER TABLE `ArticleTag`
 
 ALTER TABLE `ArticleTag`
     ADD FOREIGN KEY (`tagId`) REFERENCES `Tag` (`id`);
+
+INSERT INTO Role (name, description, createTime, updateTime)
+VALUES ('ROLE_ADMIN', '어드민', NOW(), NOW()),
+       ('ROLE_USER', '일반유저', NOW(), NOW());
