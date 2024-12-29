@@ -20,4 +20,8 @@ public class CategoryReader {
 	public CategoryEntity findBy(String name) {
 		return categoryMapper.findBy(name);
 	}
+
+	public CategoryEntity findById(Long id) {
+		return categoryMapper.findById(id);
+	}
 }

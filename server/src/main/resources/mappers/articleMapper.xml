@@ -12,5 +12,34 @@
     <select id="getLastInsertId">
         SELECT LAST_INSERT_ID()
     </select>
+
+    <select id="findById">
+        SELECT id,
+               title,
+               author,
+               description,
+               link,
+               views,
+               categoryId,
+               createTime,
+               updateTime
+        FROM Article
+        WHERE id = #{articleId}
+    </select>
+
+    <update id="update" parameterType="com.raon.devlog.mapper.article.ArticleEntity">
+        UPDATE
+            Article
+        SET title       = #{title},
+            author      = #{author},
+            description = #{description},
+            link        = #{link},
+            views       = #{views},
+            createTime  = #{createTime},
+            updateTime  = #{updateTime},
+            categoryId  = #{categoryId},
+            author      = #{author}
+        WHERE id = #{id}
+    </update>
 </mapper>
 

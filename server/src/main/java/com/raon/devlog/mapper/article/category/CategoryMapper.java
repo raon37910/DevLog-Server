@@ -6,4 +6,6 @@ public interface CategoryMapper {
 	boolean existsByName(String name);
 
 	CategoryEntity findBy(String name);
+
+	CategoryEntity findById(Long id);
 }

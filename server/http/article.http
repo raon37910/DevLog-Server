@@ -14,3 +14,23 @@ Content-Type: application/json
     "태그3"
   ]
 }
+
+###
+
+# 게시글 수정
+PUT localhost:8080/api/admin/articles/6
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBnb29nbGUuY29tIiwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJpYXQiOjE3MzU0NzAwOTIsImV4cCI6MTczNTQ3MzY5Mn0.LILhXcOiZ0W2nunpNM90JzhQiUayP8Yt_2Q36hL_sW4q8bts2OWBMqtp_njt8EPOz-awXrBk16mes0X0RzNnxQ
+Content-Type: application/json
+
+{
+  "title": "예제 수정",
+  "author": "작성자 수정",
+  "description": "이것은 예제 설명입니다.",
+  "link": "https://example.com",
+  "category": "기술",
+  "tags": [
+    "태그10",
+    "태그20",
+    "태그30"
+  ]
+}
