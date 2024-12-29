@@ -3,6 +3,9 @@ package com.raon.devlog.controller;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +23,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.raon.devlog.container.TestContainer;
+import com.raon.devlog.service.article.Article;
+import com.raon.devlog.service.article.ArticleService;
+import com.raon.devlog.service.article.category.CategoryService;
+import com.raon.devlog.service.article.tag.TagService;
 import com.raon.devlog.service.auth.AuthService;
 import com.raon.devlog.service.auth.model.SigninRequestInfo;
 import com.raon.devlog.service.auth.model.Token;
@@ -43,6 +50,15 @@ public class ArticleControllerTest {
 
 	@Autowired
 	private AuthService authService;
+
+	@Autowired
+	private ArticleService articleService;
+
+	@Autowired
+	private TagService tagService;
+
+	@Autowired
+	private CategoryService categoryService;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -142,5 +158,72 @@ public class ArticleControllerTest {
 
 		String insertUserRoleQuery = "INSERT INTO UserRole (userId, roleId) VALUES (?, ?)";
 		jdbcTemplate.update(insertUserRoleQuery, userId, adminRoleId);
+	}
+
+	@Test
+	@DisplayName("게시글 수정 API - 성공")
+	void articleUpdate() throws Exception {
+		Article article = new Article(1L, "title", "설명", "링크", "저자", 0L, LocalDateTime.now(), null);
+		String category = "category1";
+		List<String> tags = List.of("tag1", "tag2", "tag3");
+		String articleUpdateRequest = """
+			{
+			  "title": "예제 수정",
+			  "author": "작성자 수정",
+			  "description": "이것은 수정 설명입니다.",
+			  "link": "https://example.com",
+			  "category": "기술",
+			  "tags": [
+			    "태그11",
+			    "태그2",
+			    "태그3"
+			  ]
+			}
+			""";
+
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
+
+		tagService.createTagsIfNotExists(tags);
+		categoryService.createCategoryIfNotExists(category);
+		articleService.createArticle(article,
+			category,
+			tags);
+
+		mockMvc.perform(RestDocumentationRequestBuilders.put("/api/admin/articles/" + 1)
+				.content(articleUpdateRequest).header("Authorization", "Bearer %s".formatted(token.accessToken()))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is2xxSuccessful())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API", responseFields(
+				fieldWithPath("result").type(JsonFieldType.STRING)
+					.description("The result of the operation (e.g., SUCCESS)"),
+				fieldWithPath("data").type(JsonFieldType.NULL).description("Null"),
+				fieldWithPath("error").type(JsonFieldType.NULL).description("Error information (null if no error)"))));
+	}
+
+	@Test
+	@DisplayName("게시글 수정 API 실패 - 로그인 하지 않은 유저")
+	void articleUpdateFailUnauthorized() throws Exception {
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+
+		mockMvc.perform(RestDocumentationRequestBuilders.put("/api/admin/articles/" + 1)
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isUnauthorized())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API"));
+	}
+
+	@Test
+	@DisplayName("게시글 수정 API 실패 - 권한 없는 유저")
+	void articleUpdateFailForbidden() throws Exception {
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
+
+		mockMvc.perform(RestDocumentationRequestBuilders.put("/api/admin/articles/" + 1)
+				.header("Authorization", "Bearer %s".formatted(token.accessToken()))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isForbidden())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API"));
 	}
 }
