@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `Article`
     `title`       VARCHAR(100),
     `description` VARCHAR(100),
     `link`        VARCHAR(200),
+    `author`      VARCHAR(100),
     `views`       INT,
     `createTime`  DATETIME,
     `updateTime`  DATETIME,
