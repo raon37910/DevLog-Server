@@ -20,5 +20,11 @@
         FROM Category
         WHERE name = #{name}
     </select>
+
+    <select id="findById">
+        SELECT id, name, createTime, updateTime
+        FROM Category
+        WHERE id = #{id}
+    </select>
 </mapper>
 

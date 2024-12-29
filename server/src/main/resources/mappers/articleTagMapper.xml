@@ -11,5 +11,11 @@
             (#{articleId}, #{tag.id})
         </foreach>
     </insert>
+
+    <delete id="deleteAllByArticleId">
+        DELETE
+        FROM ArticleTag
+        WHERE articleId = #{articleId}
+    </delete>
 </mapper>
 
