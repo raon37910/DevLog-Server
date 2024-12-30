@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.raon.devlog.component.response.ApiResponse;
 import com.raon.devlog.controller.auth.request.SigninRequest;
 import com.raon.devlog.controller.auth.request.TokenRefreshRequest;
 import com.raon.devlog.controller.auth.response.SinginResponse;
 import com.raon.devlog.controller.auth.response.TokenRefreshResponse;
 import com.raon.devlog.service.auth.AuthService;
 import com.raon.devlog.service.auth.model.Token;
-import com.raon.devlog.support.response.ApiResponse;
 
 import jakarta.validation.Valid;
 

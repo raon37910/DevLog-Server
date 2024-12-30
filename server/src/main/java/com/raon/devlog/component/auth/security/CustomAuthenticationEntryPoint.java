@@ -1,4 +1,4 @@
-package com.raon.devlog.config;
+package com.raon.devlog.component.auth.security;
 
 import java.io.IOException;
 

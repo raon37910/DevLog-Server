@@ -1,4 +1,4 @@
-package com.raon.devlog.support.error;
+package com.raon.devlog.component.error;
 
 public class ErrorMessage {
 	private final String code;

@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.raon.devlog.component.response.ApiResponse;
 import com.raon.devlog.controller.article.request.ArticleCreateRequest;
 import com.raon.devlog.service.article.ArticleService;
 import com.raon.devlog.service.article.category.CategoryService;
 import com.raon.devlog.service.article.tag.TagService;
-import com.raon.devlog.support.response.ApiResponse;
 
 import jakarta.validation.Valid;
 

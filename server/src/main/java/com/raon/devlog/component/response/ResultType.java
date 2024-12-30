@@ -1,4 +1,4 @@
-package com.raon.devlog.support.response;
+package com.raon.devlog.component.response;
 
 public enum ResultType {
 	SUCCESS,

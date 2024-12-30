@@ -2,74 +2,68 @@ package com.raon.devlog.service.auth;
 
 import java.util.List;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.raon.devlog.domain.auth.TokenAppender;
-import com.raon.devlog.domain.auth.TokenProvider;
-import com.raon.devlog.domain.auth.TokenReader;
+import com.raon.devlog.component.auth.PasswordValidator;
+import com.raon.devlog.component.auth.TokenProvider;
+import com.raon.devlog.component.error.DevlogException;
+import com.raon.devlog.component.error.ErrorType;
 import com.raon.devlog.mapper.user.RoleEntity;
 import com.raon.devlog.mapper.user.UserEntity;
+import com.raon.devlog.repository.auth.TokenCommand;
+import com.raon.devlog.repository.auth.TokenQuery;
 import com.raon.devlog.repository.user.UserQuery;
 import com.raon.devlog.service.auth.model.SigninRequestInfo;
 import com.raon.devlog.service.auth.model.Token;
 import com.raon.devlog.service.auth.model.TokenClaim;
-import com.raon.devlog.support.error.DevlogException;
-import com.raon.devlog.support.error.ErrorType;
 
 @Service
 public class AuthService {
 	private final UserQuery userQuery;
-	private final PasswordEncoder passwordEncoder;
+	private final PasswordValidator passwordValidator;
 	private final TokenProvider tokenProvider;
-	private final TokenAppender tokenAppender;
-	private final TokenReader tokenReader;
+	private final TokenCommand tokenCommand;
+	private final TokenQuery tokenQuery;
 
 	public AuthService(
 		UserQuery userQuery,
-		PasswordEncoder passwordEncoder,
+		PasswordValidator passwordValidator,
 		TokenProvider tokenProvider,
-		TokenAppender tokenAppender,
-		TokenReader tokenReader
+		TokenCommand tokenCommand,
+		TokenQuery tokenQuery
 	) {
 		this.userQuery = userQuery;
-		this.passwordEncoder = passwordEncoder;
+		this.passwordValidator = passwordValidator;
 		this.tokenProvider = tokenProvider;
-		this.tokenAppender = tokenAppender;
-		this.tokenReader = tokenReader;
+		this.tokenCommand = tokenCommand;
+		this.tokenQuery = tokenQuery;
 	}
 
 	public Token generateToken(SigninRequestInfo signinRequestInfo) {
 		UserEntity foundUser = userQuery.findByEmail(signinRequestInfo.email())
 			.orElseThrow(() -> new DevlogException(ErrorType.VALIDATION_ERROR));
+
 		List<String> userRoles = userQuery.getRoles(foundUser.id())
 			.stream().map(RoleEntity::name)
 			.toList();
 
-		if (!passwordEncoder.matches(signinRequestInfo.password(), foundUser.password())) {
-			throw new DevlogException(ErrorType.AUTHENTICATION_ERROR);
-		}
-
+		passwordValidator.validatePassword(signinRequestInfo.password(), foundUser.password());
 		TokenClaim tokenClaim = new TokenClaim(foundUser.email(), userRoles);
+		final Token token = tokenProvider.generateToken(tokenClaim);
 
-		final String accessToken = tokenProvider.generateAccessToken(tokenClaim);
-		final String refreshToken = tokenProvider.generateRefreshToken(tokenClaim);
-		final Token token = new Token(accessToken, refreshToken);
-		tokenAppender.appendToken(token);
+		tokenCommand.appendToken(token);
 
 		return token;
 	}
 
 	public Token refreshToken(String accessToken) {
-		String refreshToken = tokenReader.getRefreshToken(accessToken)
+		String refreshToken = tokenQuery.getRefreshToken(accessToken)
 			.orElseThrow(() -> new DevlogException(ErrorType.AUTHENTICATION_ERROR));
 
 		TokenClaim tokenClaim = tokenProvider.parseToken(refreshToken);
+		final Token token = tokenProvider.generateToken(tokenClaim);
 
-		final String newAccessToken = tokenProvider.generateAccessToken(tokenClaim);
-		final String newRefreshToken = tokenProvider.generateRefreshToken(tokenClaim);
-		final Token token = new Token(newAccessToken, newRefreshToken);
-		tokenAppender.appendToken(token);
+		tokenCommand.appendToken(token);
 
 		return token;
 	}

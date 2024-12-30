@@ -12,9 +12,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.raon.devlog.support.error.DevlogException;
-import com.raon.devlog.support.error.ErrorType;
-import com.raon.devlog.support.response.ApiResponse;
+import com.raon.devlog.component.error.DevlogException;
+import com.raon.devlog.component.error.ErrorType;
+import com.raon.devlog.component.response.ApiResponse;
 
 @RestControllerAdvice
 public class ApiControllerAdvice {

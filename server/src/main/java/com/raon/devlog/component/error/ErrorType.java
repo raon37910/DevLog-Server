@@ -1,4 +1,4 @@
-package com.raon.devlog.support.error;
+package com.raon.devlog.component.error;
 
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.http.HttpStatus;
