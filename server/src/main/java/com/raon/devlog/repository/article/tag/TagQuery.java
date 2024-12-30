@@ -1,18 +1,17 @@
-package com.raon.devlog.domain.article.tag;
+package com.raon.devlog.repository.article.tag;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.raon.devlog.mapper.article.tag.TagEntity;
 import com.raon.devlog.mapper.article.tag.TagMapper;
 
-@Component
-public class TagReader {
-
+@Repository
+public class TagQuery {
 	private final TagMapper tagMapper;
 
-	public TagReader(TagMapper tagMapper) {
+	public TagQuery(TagMapper tagMapper) {
 		this.tagMapper = tagMapper;
 	}
 

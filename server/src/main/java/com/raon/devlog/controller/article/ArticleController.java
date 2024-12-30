@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raon.devlog.component.response.ApiResponse;
 import com.raon.devlog.controller.article.request.ArticleCreateRequest;
 import com.raon.devlog.service.article.ArticleService;
-import com.raon.devlog.service.article.category.CategoryService;
-import com.raon.devlog.service.article.tag.TagService;
 
 import jakarta.validation.Valid;
 
@@ -20,20 +18,14 @@ import jakarta.validation.Valid;
 public class ArticleController {
 
 	private final ArticleService articleService;
-	private final TagService tagService;
-	private final CategoryService categoryService;
 
-	public ArticleController(ArticleService articleService, TagService tagService, CategoryService categoryService) {
+	public ArticleController(ArticleService articleService) {
 		this.articleService = articleService;
-		this.tagService = tagService;
-		this.categoryService = categoryService;
 	}
 
 	@PostMapping("/api/admin/articles")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ApiResponse<Void> createArticle(@Valid @RequestBody ArticleCreateRequest request) {
-		categoryService.createCategoryIfNotExists(request.category());
-		tagService.createTagsIfNotExists(request.tags());
 		articleService.createArticle(request.toArticle(), request.category(), request.tags());
 
 		return ApiResponse.success(null);
@@ -43,8 +35,6 @@ public class ArticleController {
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<Void> updateArticle(@PathVariable Long articleId,
 		@Valid @RequestBody ArticleCreateRequest request) {
-		categoryService.createCategoryIfNotExists(request.category());
-		tagService.createTagsIfNotExists(request.tags());
 		articleService.updateArticle(articleId, request.toArticle(), request.category(), request.tags());
 
 		return ApiResponse.success(null);

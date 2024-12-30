@@ -1,15 +1,16 @@
-package com.raon.devlog.domain.article.category;
+package com.raon.devlog.repository.article.category;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.raon.devlog.mapper.article.category.CategoryEntity;
 import com.raon.devlog.mapper.article.category.CategoryMapper;
 
-@Component
-public class CategoryReader {
+@Repository
+public class CategoryQuery {
+
 	private final CategoryMapper categoryMapper;
 
-	public CategoryReader(CategoryMapper categoryMapper) {
+	public CategoryQuery(CategoryMapper categoryMapper) {
 		this.categoryMapper = categoryMapper;
 	}
 
