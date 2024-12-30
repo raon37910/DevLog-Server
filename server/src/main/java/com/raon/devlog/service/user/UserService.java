@@ -23,8 +23,6 @@ public class UserService {
 	@Transactional
 	public void createUser(CreateUserInfo createUserInfo) {
 		userQuery.ifExistsByEmailDoThrow(createUserInfo.email());
-		userCommand.append(
-			UserEntity.from(createUserInfo.email(), passwordEncoder.encode(createUserInfo.password())
-			));
+		userCommand.append(UserEntity.from(createUserInfo.email(), passwordEncoder.encode(createUserInfo.password())));
 	}
 }
