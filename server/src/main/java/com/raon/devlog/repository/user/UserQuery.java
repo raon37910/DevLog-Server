@@ -5,11 +5,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import com.raon.devlog.component.error.DevlogException;
+import com.raon.devlog.component.error.ErrorType;
 import com.raon.devlog.mapper.user.RoleEntity;
 import com.raon.devlog.mapper.user.UserEntity;
 import com.raon.devlog.mapper.user.UserMapper;
-import com.raon.devlog.support.error.DevlogException;
-import com.raon.devlog.support.error.ErrorType;
 
 @Repository
 public class UserQuery {

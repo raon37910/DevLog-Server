@@ -1,7 +1,7 @@
-package com.raon.devlog.support.response;
+package com.raon.devlog.component.response;
 
-import com.raon.devlog.support.error.ErrorMessage;
-import com.raon.devlog.support.error.ErrorType;
+import com.raon.devlog.component.error.ErrorMessage;
+import com.raon.devlog.component.error.ErrorType;
 
 public class ApiResponse<T> {
 	private final ResultType result;

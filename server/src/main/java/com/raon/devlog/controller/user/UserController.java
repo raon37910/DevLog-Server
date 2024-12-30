@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.raon.devlog.component.response.ApiResponse;
 import com.raon.devlog.controller.user.request.CreateUserRequest;
 import com.raon.devlog.service.user.UserService;
-import com.raon.devlog.support.response.ApiResponse;
 
 import jakarta.validation.Valid;
 

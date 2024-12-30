@@ -13,7 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.raon.devlog.domain.auth.JwtTokenProvider;
+import com.raon.devlog.component.auth.JwtTokenProvider;
+import com.raon.devlog.component.auth.security.CustomAccessDeniedHandler;
+import com.raon.devlog.component.auth.security.CustomAuthenticationEntryPoint;
 import com.raon.devlog.filter.JwtAuthFilter;
 
 @Configuration

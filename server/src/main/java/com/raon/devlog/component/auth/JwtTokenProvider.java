@@ -1,4 +1,4 @@
-package com.raon.devlog.domain.auth;
+package com.raon.devlog.component.auth;
 
 import java.util.Date;
 import java.util.List;
@@ -8,6 +8,7 @@ import javax.crypto.SecretKey;
 import org.springframework.stereotype.Component;
 
 import com.raon.devlog.config.JwtConfig;
+import com.raon.devlog.service.auth.model.Token;
 import com.raon.devlog.service.auth.model.TokenClaim;
 
 import io.jsonwebtoken.Claims;
@@ -52,6 +53,13 @@ public class JwtTokenProvider implements TokenProvider {
 			.expiration(expireDate)
 			.signWith(secretKey)
 			.compact();
+	}
+
+	@Override
+	public Token generateToken(TokenClaim tokenClaim) {
+		String accessToken = generateAccessToken(tokenClaim);
+		String refreshToken = generateRefreshToken(tokenClaim);
+		return new Token(accessToken, refreshToken);
 	}
 
 	@Override

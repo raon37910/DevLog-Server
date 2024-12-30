@@ -9,7 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.raon.devlog.domain.auth.JwtTokenProvider;
+import com.raon.devlog.component.auth.JwtTokenProvider;
 import com.raon.devlog.service.auth.model.TokenClaim;
 
 import io.micrometer.common.util.StringUtils;

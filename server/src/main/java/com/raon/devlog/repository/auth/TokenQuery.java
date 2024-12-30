@@ -1,19 +1,15 @@
-package com.raon.devlog.domain.auth;
+package com.raon.devlog.repository.auth;
 
 import java.util.Optional;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-import com.raon.devlog.config.JwtConfig;
-
-@Component
-public class TokenReader {
-	private final JwtConfig jwtConfig;
+@Repository
+public class TokenQuery {
 	private final RedisTemplate<String, String> redisTemplate;
 
-	public TokenReader(JwtConfig jwtConfig, RedisTemplate<String, String> redisTemplate) {
-		this.jwtConfig = jwtConfig;
+	public TokenQuery(RedisTemplate<String, String> redisTemplate) {
 		this.redisTemplate = redisTemplate;
 	}
 
