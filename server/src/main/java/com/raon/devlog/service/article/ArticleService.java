@@ -6,90 +6,70 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.raon.devlog.component.error.DevlogException;
-import com.raon.devlog.component.error.ErrorType;
-import com.raon.devlog.domain.article.ArticleAppender;
-import com.raon.devlog.domain.article.ArticleReader;
-import com.raon.devlog.domain.article.ArticleUpdater;
-import com.raon.devlog.domain.article.category.CategoryReader;
-import com.raon.devlog.domain.article.tag.TagAppender;
-import com.raon.devlog.domain.article.tag.TagReader;
-import com.raon.devlog.domain.article.tag.TagRemover;
 import com.raon.devlog.mapper.article.ArticleEntity;
 import com.raon.devlog.mapper.article.category.CategoryEntity;
 import com.raon.devlog.mapper.article.tag.TagEntity;
+import com.raon.devlog.repository.article.ArticleCommand;
+import com.raon.devlog.repository.article.ArticleQuery;
+import com.raon.devlog.repository.article.category.CategoryCommand;
+import com.raon.devlog.repository.article.category.CategoryQuery;
+import com.raon.devlog.repository.article.tag.TagCommand;
+import com.raon.devlog.repository.article.tag.TagQuery;
 
-// FIXME 도메인을 너무 많이 쪼갰음 Query Command 기준으로 쪼개는개 좋을 듯
 @Service
 public class ArticleService {
 
-	private final CategoryReader categoryReader;
-	private final TagReader tagReader;
-	private final TagAppender tagAppender;
-	private final TagRemover tagRemover;
-	private final ArticleAppender articleAppender;
-	private final ArticleReader articleReader;
-	private final ArticleUpdater articleUpdater;
+	private final CategoryQuery categoryQuery;
+	private final CategoryCommand categoryCommand;
+	private final TagQuery tagQuery;
+	private final TagCommand tagCommand;
+	private final ArticleQuery articleQuery;
+	private final ArticleCommand articleCommand;
 
 	public ArticleService(
-		CategoryReader categoryReader,
-		TagReader tagReader,
-		TagAppender tagAppender,
-		TagRemover tagRemover,
-		ArticleAppender articleAppender,
-		ArticleReader articleReader,
-		ArticleUpdater articleUpdater) {
-		this.categoryReader = categoryReader;
-		this.tagReader = tagReader;
-		this.tagAppender = tagAppender;
-		this.tagRemover = tagRemover;
-		this.articleAppender = articleAppender;
-		this.articleReader = articleReader;
-		this.articleUpdater = articleUpdater;
+		CategoryQuery categoryQuery,
+		CategoryCommand categoryCommand,
+		TagQuery tagQuery,
+		TagCommand tagCommand,
+		ArticleQuery articleQuery,
+		ArticleCommand articleCommand
+	) {
+		this.categoryQuery = categoryQuery;
+		this.categoryCommand = categoryCommand;
+		this.tagQuery = tagQuery;
+		this.tagCommand = tagCommand;
+		this.articleQuery = articleQuery;
+		this.articleCommand = articleCommand;
 	}
 
 	@Transactional
 	public void createArticle(Article article, String category, List<String> tags) {
-		List<TagEntity> tagEntities = tagReader.findByTagsIn(tags);
-		CategoryEntity categoryEntity = categoryReader.findBy(category);
-		ArticleEntity articleEntity = new ArticleEntity(
-			null,
-			article.title(),
-			article.author(),
-			article.description(),
-			article.link(),
-			0L,
-			categoryEntity.id(),
-			LocalDateTime.now(),
-			null
-		);
+		categoryCommand.createCategoryIfNotExists(category);
+		tagCommand.createTagsIfNotExists(tags);
+		List<TagEntity> tagEntities = tagQuery.findByTagsIn(tags);
+		CategoryEntity categoryEntity = categoryQuery.findBy(category);
 
-		articleAppender.append(articleEntity);
-		tagAppender.appendArticleTags(articleReader.getLastInsertId(), tagEntities);
+		ArticleEntity articleEntity = article.toEntityWithCreateTime(categoryEntity.id(), LocalDateTime.now());
+
+		articleCommand.append(articleEntity);
+		tagCommand.appendArticleTags(articleQuery.getLastInsertId(), tagEntities);
 	}
 
 	@Transactional
 	public void updateArticle(Long articleId, Article article, String category, List<String> tags) {
-		ArticleEntity articleEntity = articleReader.findById(articleId)
-			.orElseThrow(() -> new DevlogException(ErrorType.VALIDATION_ERROR));
+		categoryCommand.createCategoryIfNotExists(category);
+		tagCommand.createTagsIfNotExists(tags);
+		articleQuery.existsByIdOrElseThrow(articleId);
 
-		CategoryEntity newCategoryEntity = categoryReader.findBy(category);
-		List<TagEntity> newTagEntities = tagReader.findByTagsIn(tags);
+		CategoryEntity newCategoryEntity = categoryQuery.findBy(category);
+		List<TagEntity> newTagEntities = tagQuery.findByTagsIn(tags);
 
-		tagRemover.deleteAllByArticleId(articleId);
-		tagAppender.appendArticleTags(articleId, newTagEntities);
+		tagCommand.deleteAllByArticleId(articleId);
+		tagCommand.appendArticleTags(articleId, newTagEntities);
 
-		ArticleEntity updatedArticleEntity = new ArticleEntity(
-			articleId,
-			article.title(),
-			article.author(),
-			article.description(),
-			article.link(),
-			article.views(),
-			newCategoryEntity.id(),
-			articleEntity.createTime(),
-			LocalDateTime.now()
-		);
-		articleUpdater.update(updatedArticleEntity);
+		ArticleEntity updatedArticleEntity = article.toEntityWithUpdateTime(newCategoryEntity.id(),
+			LocalDateTime.now());
+
+		articleCommand.update(updatedArticleEntity);
 	}
 }

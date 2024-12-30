@@ -23,10 +23,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.raon.devlog.container.TestContainer;
+import com.raon.devlog.repository.article.category.CategoryCommand;
+import com.raon.devlog.repository.article.tag.TagCommand;
 import com.raon.devlog.service.article.Article;
 import com.raon.devlog.service.article.ArticleService;
-import com.raon.devlog.service.article.category.CategoryService;
-import com.raon.devlog.service.article.tag.TagService;
 import com.raon.devlog.service.auth.AuthService;
 import com.raon.devlog.service.auth.model.SigninRequestInfo;
 import com.raon.devlog.service.auth.model.Token;
@@ -55,10 +55,10 @@ public class ArticleControllerTest {
 	private ArticleService articleService;
 
 	@Autowired
-	private TagService tagService;
+	private TagCommand tagCommand;
 
 	@Autowired
-	private CategoryService categoryService;
+	private CategoryCommand categoryCommand;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -185,8 +185,8 @@ public class ArticleControllerTest {
 		createAdminRole("admin@admin.com");
 		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
 
-		tagService.createTagsIfNotExists(tags);
-		categoryService.createCategoryIfNotExists(category);
+		tagCommand.createTagsIfNotExists(tags);
+		categoryCommand.createCategoryIfNotExists(category);
 		articleService.createArticle(article,
 			category,
 			tags);
