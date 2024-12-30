@@ -54,21 +54,7 @@ public class UserControllerTest {
 			.andDo(MockMvcRestDocumentationWrapper.document("USER API", responseFields(
 				fieldWithPath("result").type(JsonFieldType.STRING)
 					.description("The result of the operation (e.g., SUCCESS)"),
-				fieldWithPath("data.email").type(JsonFieldType.STRING).description("The email of the user."),
-				fieldWithPath("data.name").type(JsonFieldType.STRING)
-					.optional()
-					.description("The name of the user (null if not provided)."),
-				fieldWithPath("data.description").type(JsonFieldType.STRING)
-					.optional()
-					.description("The description of the user (null if not provided)."),
-				fieldWithPath("data.profileImageUrl").type(JsonFieldType.STRING)
-					.optional()
-					.description("The profile image URL of the user (null if not provided)."),
-				fieldWithPath("data.createTime").type(JsonFieldType.STRING)
-					.description("The timestamp when the user was created."),
-				fieldWithPath("data.updateTime").type(JsonFieldType.STRING)
-					.optional()
-					.description("The timestamp when the user was last updated (null if not updated)."),
+				fieldWithPath("data").type(JsonFieldType.NULL).description("The Data is Null When Result is Fail"),
 				fieldWithPath("error").type(JsonFieldType.NULL).description("Error information (null if no error)"))));
 	}
 

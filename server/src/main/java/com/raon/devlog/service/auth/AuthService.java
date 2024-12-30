@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import com.raon.devlog.domain.auth.TokenAppender;
 import com.raon.devlog.domain.auth.TokenProvider;
 import com.raon.devlog.domain.auth.TokenReader;
-import com.raon.devlog.domain.user.UserReader;
 import com.raon.devlog.mapper.user.RoleEntity;
 import com.raon.devlog.mapper.user.UserEntity;
+import com.raon.devlog.repository.user.UserQuery;
 import com.raon.devlog.service.auth.model.SigninRequestInfo;
 import com.raon.devlog.service.auth.model.Token;
 import com.raon.devlog.service.auth.model.TokenClaim;
@@ -19,20 +19,20 @@ import com.raon.devlog.support.error.ErrorType;
 
 @Service
 public class AuthService {
-	private final UserReader userReader;
+	private final UserQuery userQuery;
 	private final PasswordEncoder passwordEncoder;
 	private final TokenProvider tokenProvider;
 	private final TokenAppender tokenAppender;
 	private final TokenReader tokenReader;
 
 	public AuthService(
-		UserReader userReader,
+		UserQuery userQuery,
 		PasswordEncoder passwordEncoder,
 		TokenProvider tokenProvider,
 		TokenAppender tokenAppender,
 		TokenReader tokenReader
 	) {
-		this.userReader = userReader;
+		this.userQuery = userQuery;
 		this.passwordEncoder = passwordEncoder;
 		this.tokenProvider = tokenProvider;
 		this.tokenAppender = tokenAppender;
@@ -40,9 +40,9 @@ public class AuthService {
 	}
 
 	public Token generateToken(SigninRequestInfo signinRequestInfo) {
-		UserEntity foundUser = userReader.findByEmail(signinRequestInfo.email())
+		UserEntity foundUser = userQuery.findByEmail(signinRequestInfo.email())
 			.orElseThrow(() -> new DevlogException(ErrorType.VALIDATION_ERROR));
-		List<String> userRoles = userReader.getRoles(foundUser.id())
+		List<String> userRoles = userQuery.getRoles(foundUser.id())
 			.stream().map(RoleEntity::name)
 			.toList();
 

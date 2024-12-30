@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raon.devlog.controller.user.request.CreateUserRequest;
-import com.raon.devlog.controller.user.response.CreateUserResponse;
-import com.raon.devlog.service.user.UserInfo;
 import com.raon.devlog.service.user.UserService;
 import com.raon.devlog.support.response.ApiResponse;
 
@@ -27,8 +25,8 @@ public class UserController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ApiResponse<CreateUserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
-		UserInfo createdUser = userService.createUser(request.toCreateUserInfo());
-		return ApiResponse.success(CreateUserResponse.from(createdUser));
+	public ApiResponse<Void> createUser(@Valid @RequestBody CreateUserRequest request) {
+		userService.createUser(request.toCreateUserInfo());
+		return ApiResponse.success(null);
 	}
 }

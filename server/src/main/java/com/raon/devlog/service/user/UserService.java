@@ -4,40 +4,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.raon.devlog.domain.user.UserAppender;
-import com.raon.devlog.domain.user.UserReader;
 import com.raon.devlog.mapper.user.UserEntity;
-import com.raon.devlog.support.error.DevlogException;
-import com.raon.devlog.support.error.ErrorType;
+import com.raon.devlog.repository.user.UserCommand;
+import com.raon.devlog.repository.user.UserQuery;
 
 @Service
 public class UserService {
-	private final UserAppender userAppender;
-	private final UserReader userReader;
+	private final UserCommand userCommand;
+	private final UserQuery userQuery;
 	private final PasswordEncoder passwordEncoder;
 
-	public UserService(UserAppender userAppender, UserReader userReader, PasswordEncoder passwordEncoder) {
-		this.userAppender = userAppender;
-		this.userReader = userReader;
+	public UserService(UserCommand userCommand, UserQuery userQuery, PasswordEncoder passwordEncoder) {
+		this.userCommand = userCommand;
+		this.userQuery = userQuery;
 		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Transactional
-	public UserInfo createUser(CreateUserInfo createUserInfo) {
-		if (userReader.existsByEmail(createUserInfo.email())) {
-			throw new DevlogException(ErrorType.VALIDATION_ERROR);
-		}
-
-		CreateUserInfo hashedUserInfo = new CreateUserInfo(
-			createUserInfo.email(),
-			passwordEncoder.encode(createUserInfo.password())
-		);
-
-		userAppender.append(hashedUserInfo.toEntity());
-
-		UserEntity userEntity = userReader.findByEmail(createUserInfo.email())
-			.orElseThrow(() -> new DevlogException(ErrorType.DEFAULT_ERROR));
-
-		return UserInfo.from(userEntity);
+	public void createUser(CreateUserInfo createUserInfo) {
+		userQuery.ifExistsByEmailDoThrow(createUserInfo.email());
+		userCommand.append(
+			UserEntity.from(createUserInfo.email(), passwordEncoder.encode(createUserInfo.password())
+			));
 	}
 }
