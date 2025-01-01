@@ -228,6 +228,34 @@ public class ArticleControllerTest {
 	}
 
 	@Test
+	@DisplayName("게시글 삭제 - 성공")
+	void articleDeleteSuccess() throws Exception {
+		Article article = new Article(1L, "title", "설명", "링크", "저자", 0L, LocalDateTime.now(), null);
+		String category = "category1";
+		List<String> tags = List.of("tag1", "tag2", "tag3");
+
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
+		
+		tagCommand.createTagsIfNotExists(tags);
+		categoryCommand.createCategoryIfNotExists(category);
+		articleService.createArticle(article,
+			category,
+			tags);
+
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/admin/articles/" + 1)
+				.header("Authorization", "Bearer %s".formatted(token.accessToken()))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is2xxSuccessful())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API", responseFields(
+				fieldWithPath("result").type(JsonFieldType.STRING)
+					.description("The result of the operation (e.g., SUCCESS)"),
+				fieldWithPath("data").type(JsonFieldType.NULL).description("Null"),
+				fieldWithPath("error").type(JsonFieldType.NULL).description("Error information (null if no error)"))));
+	}
+
+	@Test
 	@DisplayName("게시글 삭제 실패 - 로그인 하지 않은 유저")
 	void articleDeleteFailUnauthorized() throws Exception {
 		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
