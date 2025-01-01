@@ -1,4 +1,4 @@
-CREATE TABLE `User`
+CREATE TABLE IF NOT EXISTS `User`
 (
     `id`              INT PRIMARY KEY AUTO_INCREMENT,
     `email`           VARCHAR(45),
@@ -10,7 +10,7 @@ CREATE TABLE `User`
     `updateTime`      DATETIME
 );
 
-CREATE TABLE `UserRole`
+CREATE TABLE IF NOT EXISTS `UserRole`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `userId`     INT,
@@ -19,7 +19,7 @@ CREATE TABLE `UserRole`
     `updateTime` DATETIME
 );
 
-CREATE TABLE `Role`
+CREATE TABLE IF NOT EXISTS `Role`
 (
     `id`          INT PRIMARY KEY AUTO_INCREMENT,
     `name`        VARCHAR(45),
@@ -28,7 +28,7 @@ CREATE TABLE `Role`
     `updateTime`  DATETIME
 );
 
-CREATE TABLE `Article`
+CREATE TABLE IF NOT EXISTS `Article`
 (
     `id`          INT PRIMARY KEY AUTO_INCREMENT,
     `title`       VARCHAR(100),
@@ -42,7 +42,7 @@ CREATE TABLE `Article`
     `userId`      INT
 );
 
-CREATE TABLE `PostLike`
+CREATE TABLE IF NOT EXISTS `ArticleLike`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `userId`     INT,
@@ -51,7 +51,7 @@ CREATE TABLE `PostLike`
     `updateTime` DATETIME
 );
 
-CREATE TABLE `BookMark`
+CREATE TABLE IF NOT EXISTS `BookMark`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `userId`     INT,
@@ -60,7 +60,7 @@ CREATE TABLE `BookMark`
     `updateTime` DATETIME
 );
 
-CREATE TABLE `Category`
+CREATE TABLE IF NOT EXISTS `Category`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `name`       VARCHAR(45),
@@ -68,7 +68,7 @@ CREATE TABLE `Category`
     `updateTime` DATETIME
 );
 
-CREATE TABLE `ArticleTag`
+CREATE TABLE IF NOT EXISTS `ArticleTag`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `articleId`  INT,
@@ -77,7 +77,7 @@ CREATE TABLE `ArticleTag`
     `updateTime` DATETIME
 );
 
-CREATE TABLE `Tag`
+CREATE TABLE IF NOT EXISTS `Tag`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `name`       VARCHAR(45),
@@ -86,28 +86,55 @@ CREATE TABLE `Tag`
 );
 
 ALTER TABLE `UserRole`
-    ADD FOREIGN KEY (`userId`) REFERENCES `User` (`id`);
+    ADD CONSTRAINT `fk_UserRole_user`
+        FOREIGN KEY (`userId`)
+            REFERENCES `User` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `UserRole`
-    ADD FOREIGN KEY (`roleId`) REFERENCES `Role` (`id`);
+    ADD CONSTRAINT `fk_UserRole_role`
+        FOREIGN KEY (`roleId`)
+            REFERENCES `Role` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `Article`
-    ADD FOREIGN KEY (`categoryId`) REFERENCES `Category` (`id`);
+    ADD CONSTRAINT `fk_Article_category`
+        FOREIGN KEY (`categoryId`)
+            REFERENCES `Category` (`id`)
+            ON DELETE CASCADE;
 
-ALTER TABLE `PostLike`
-    ADD FOREIGN KEY (`userId`) REFERENCES `User` (`id`);
+ALTER TABLE `ArticleLike`
+    ADD CONSTRAINT `fk_ArticleLike_user`
+        FOREIGN KEY (`userId`)
+            REFERENCES `User` (`id`)
+            ON DELETE CASCADE;
 
-ALTER TABLE `PostLike`
-    ADD FOREIGN KEY (`articleId`) REFERENCES `Article` (`id`);
+ALTER TABLE `ArticleLike`
+    ADD CONSTRAINT `fk_ArticleLike_article`
+        FOREIGN KEY (`articleId`)
+            REFERENCES `Article` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `BookMark`
-    ADD FOREIGN KEY (`userId`) REFERENCES `User` (`id`);
+    ADD CONSTRAINT `fk_BookMark_user`
+        FOREIGN KEY (`userId`)
+            REFERENCES `User` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `BookMark`
-    ADD FOREIGN KEY (`articleId`) REFERENCES `Article` (`id`);
+    ADD CONSTRAINT `fk_BookMark_article`
+        FOREIGN KEY (`articleId`)
+            REFERENCES `Article` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `ArticleTag`
-    ADD FOREIGN KEY (`articleId`) REFERENCES `Article` (`id`);
+    ADD CONSTRAINT `fk_ArticleTag_article`
+        FOREIGN KEY (`articleId`)
+            REFERENCES `Article` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `ArticleTag`
-    ADD FOREIGN KEY (`tagId`) REFERENCES `Tag` (`id`);
+    ADD CONSTRAINT `fk_ArticleTag_tag`
+        FOREIGN KEY (`tagId`)
+            REFERENCES `Tag` (`id`)
+            ON DELETE CASCADE;
