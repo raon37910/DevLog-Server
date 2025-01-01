@@ -20,4 +20,8 @@ public class ArticleCommand {
 	public void update(ArticleEntity articleEntity) {
 		articleMapper.update(articleEntity);
 	}
+
+	public void deleteById(Long articleId) {
+		articleMapper.deleteById(articleId);
+	}
 }

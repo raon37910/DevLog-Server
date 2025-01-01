@@ -41,5 +41,11 @@
             author      = #{author}
         WHERE id = #{id}
     </update>
+
+    <delete id="deleteById">
+        DELETE
+        FROM Article
+        WHERE id = #{articleId}
+    </delete>
 </mapper>
 

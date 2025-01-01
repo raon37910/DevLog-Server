@@ -72,4 +72,10 @@ public class ArticleService {
 
 		articleCommand.update(updatedArticleEntity);
 	}
+
+	@Transactional
+	public void deleteArticle(Long articleId) {
+		articleQuery.existsByIdOrElseThrow(articleId);
+		articleCommand.deleteById(articleId);
+	}
 }

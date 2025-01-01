@@ -10,4 +10,6 @@ public interface ArticleMapper {
 	Optional<ArticleEntity> findById(Long articleId);
 
 	void update(ArticleEntity articleEntity);
+
+	void deleteById(Long articleId);
 }
