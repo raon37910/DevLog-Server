@@ -3,7 +3,7 @@ POST localhost:8080/api/auth/token
 Content-Type: application/json
 
 {
-  "email": "admin@google.com",
+  "email": "admin@admin.com",
   "password": "admin1234"
 }
 
