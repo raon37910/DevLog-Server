@@ -226,4 +226,29 @@ public class ArticleControllerTest {
 			.andExpect(status().isForbidden())
 			.andDo(MockMvcRestDocumentationWrapper.document("Article API"));
 	}
+
+	@Test
+	@DisplayName("게시글 삭제 실패 - 로그인 하지 않은 유저")
+	void articleDeleteFailUnauthorized() throws Exception {
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/admin/articles/" + 1)
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isUnauthorized())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API"));
+	}
+
+	@Test
+	@DisplayName("게시글 삭제 실패 - 권한 없는 유저")
+	void articleDeleteFailForbidden() throws Exception {
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
+
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/admin/articles/" + 1)
+				.header("Authorization", "Bearer %s".formatted(token.accessToken()))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isForbidden())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API"));
+	}
 }

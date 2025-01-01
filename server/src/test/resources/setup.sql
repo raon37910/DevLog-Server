@@ -32,9 +32,9 @@ CREATE TABLE IF NOT EXISTS `Article`
 (
     `id`          INT PRIMARY KEY AUTO_INCREMENT,
     `title`       VARCHAR(100),
+    `author`      VARCHAR(100),
     `description` VARCHAR(100),
     `link`        VARCHAR(200),
-    `author`      VARCHAR(100),
     `views`       INT,
     `createTime`  DATETIME,
     `updateTime`  DATETIME,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `Article`
     `userId`      INT
 );
 
-CREATE TABLE IF NOT EXISTS `PostLike`
+CREATE TABLE IF NOT EXISTS `ArticleLike`
 (
     `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `userId`     INT,
@@ -86,34 +86,58 @@ CREATE TABLE IF NOT EXISTS `Tag`
 );
 
 ALTER TABLE `UserRole`
-    ADD FOREIGN KEY (`userId`) REFERENCES `User` (`id`);
+    ADD CONSTRAINT `fk_UserRole_user`
+        FOREIGN KEY (`userId`)
+            REFERENCES `User` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `UserRole`
-    ADD FOREIGN KEY (`roleId`) REFERENCES `Role` (`id`);
+    ADD CONSTRAINT `fk_UserRole_role`
+        FOREIGN KEY (`roleId`)
+            REFERENCES `Role` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `Article`
-    ADD FOREIGN KEY (`categoryId`) REFERENCES `Category` (`id`);
+    ADD CONSTRAINT `fk_Article_category`
+        FOREIGN KEY (`categoryId`)
+            REFERENCES `Category` (`id`)
+            ON DELETE CASCADE;
 
-ALTER TABLE `Article`
-    ADD FOREIGN KEY (`userId`) REFERENCES `User` (`id`);
+ALTER TABLE `ArticleLike`
+    ADD CONSTRAINT `fk_ArticleLike_user`
+        FOREIGN KEY (`userId`)
+            REFERENCES `User` (`id`)
+            ON DELETE CASCADE;
 
-ALTER TABLE `PostLike`
-    ADD FOREIGN KEY (`userId`) REFERENCES `User` (`id`);
-
-ALTER TABLE `PostLike`
-    ADD FOREIGN KEY (`articleId`) REFERENCES `Article` (`id`);
+ALTER TABLE `ArticleLike`
+    ADD CONSTRAINT `fk_ArticleLike_article`
+        FOREIGN KEY (`articleId`)
+            REFERENCES `Article` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `BookMark`
-    ADD FOREIGN KEY (`userId`) REFERENCES `User` (`id`);
+    ADD CONSTRAINT `fk_BookMark_user`
+        FOREIGN KEY (`userId`)
+            REFERENCES `User` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `BookMark`
-    ADD FOREIGN KEY (`articleId`) REFERENCES `Article` (`id`);
+    ADD CONSTRAINT `fk_BookMark_article`
+        FOREIGN KEY (`articleId`)
+            REFERENCES `Article` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `ArticleTag`
-    ADD FOREIGN KEY (`articleId`) REFERENCES `Article` (`id`);
+    ADD CONSTRAINT `fk_ArticleTag_article`
+        FOREIGN KEY (`articleId`)
+            REFERENCES `Article` (`id`)
+            ON DELETE CASCADE;
 
 ALTER TABLE `ArticleTag`
-    ADD FOREIGN KEY (`tagId`) REFERENCES `Tag` (`id`);
+    ADD CONSTRAINT `fk_ArticleTag_tag`
+        FOREIGN KEY (`tagId`)
+            REFERENCES `Tag` (`id`)
+            ON DELETE CASCADE;
 
 INSERT INTO Role (name, description, createTime, updateTime)
 VALUES ('ROLE_ADMIN', '어드민', NOW(), NOW()),

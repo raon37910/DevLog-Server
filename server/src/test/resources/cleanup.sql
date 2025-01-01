@@ -1,6 +1,6 @@
 drop table ArticleTag;
 drop table BookMark;
-drop table PostLike;
+drop table ArticleLike;
 drop table Article;
 drop table Category;
 drop table Tag;
