@@ -1,16 +1,16 @@
 # 게시글 생성
 POST localhost:8080/api/admin/articles
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNTcwNTE0MywiZXhwIjoxNzM1NzA4NzQzfQ.sHHN_-zl_pVjzKbDDT2fuTxU69NS5G3JrEr3naITEfUugW4EfrUATumfzjdeNq4vpfjWfzC_mF6hLw-3BIsJWg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNTg2NjA1NCwiZXhwIjoxNzM1ODY5NjU0fQ.ADVMaVj55hgIuIht2vmymBVTc1PtAn6sAfM_2eFQq_FLZ5v2nDnroW6sR3YaAlwisldjfz1oxn387wZvLT6dxA
 Content-Type: application/json
 
 {
-  "title": "예제 제목3",
-  "author": "작성자 이름3",
-  "description": "이것은 예제 설명입니다.3",
+  "title": "예제 제목",
+  "author": "작성자 이름",
+  "description": "이것은 예제 설명입니다.",
   "link": "https://example.com",
   "category": "기술",
   "tags": [
-    "태그11",
+    "태그1",
     "태그2",
     "태그3"
   ]
@@ -41,4 +41,11 @@ Content-Type: application/json
 # 게시글 삭제
 DELETE localhost:8080/api/admin/articles/1
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNTcwNTE0MywiZXhwIjoxNzM1NzA4NzQzfQ.sHHN_-zl_pVjzKbDDT2fuTxU69NS5G3JrEr3naITEfUugW4EfrUATumfzjdeNq4vpfjWfzC_mF6hLw-3BIsJWg
+Content-Type: application/json
+
+###
+
+# 게시글 좋아요
+POST localhost:8080/api/articles/1/like
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNTg2NjA1NCwiZXhwIjoxNzM1ODY5NjU0fQ.ADVMaVj55hgIuIht2vmymBVTc1PtAn6sAfM_2eFQq_FLZ5v2nDnroW6sR3YaAlwisldjfz1oxn387wZvLT6dxA
 Content-Type: application/json
