@@ -62,3 +62,10 @@ Content-Type: application/json
 POST localhost:8080/api/articles/1/bookMark
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNTg3MTMxNiwiZXhwIjoxNzM1ODc0OTE2fQ.y-uVpcjXQM55RNt3jKE5n5J0jZtAMSS0jZ9mzF4qm6leI5xGh_ZzeY4B1XUpwezxGyYdLRmNW4JY5JqP0CdMWg
 Content-Type: application/json
+
+###
+
+# 게시글 북마크 취소
+DELETE localhost:8080/api/articles/1/bookMark
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNTg3MTMxNiwiZXhwIjoxNzM1ODc0OTE2fQ.y-uVpcjXQM55RNt3jKE5n5J0jZtAMSS0jZ9mzF4qm6leI5xGh_ZzeY4B1XUpwezxGyYdLRmNW4JY5JqP0CdMWg
+Content-Type: application/json
