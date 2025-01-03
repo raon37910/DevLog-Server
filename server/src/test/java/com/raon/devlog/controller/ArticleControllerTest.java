@@ -285,7 +285,7 @@ public class ArticleControllerTest {
 	}
 
 	@Test
-	@DisplayName("게시글 좋아요 API 성공")
+	@DisplayName("게시글 좋아요 API - 성공")
 	void articleLikeSuccess() throws Exception {
 		Article article = new Article(1L, "title", "설명", "링크", "저자", 0L, LocalDateTime.now(), null);
 		String category = "category1";
@@ -379,6 +379,97 @@ public class ArticleControllerTest {
 		createAdminRole("admin@admin.com");
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/articles/" + 1 + "/like")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isUnauthorized())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API"));
+	}
+
+	@Test
+	@DisplayName("게시글 좋아요 취소 API - 성공")
+	void articleLikeCancelSuccess() throws Exception {
+		Article article = new Article(1L, "title", "설명", "링크", "저자", 0L, LocalDateTime.now(), null);
+		String category = "category1";
+		List<String> tags = List.of("tag1", "tag2", "tag3");
+
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
+
+		tagCommand.createTagsIfNotExists(tags);
+		categoryCommand.createCategoryIfNotExists(category);
+		articleService.createArticle(article,
+			category,
+			tags);
+
+		articleLikeService.like(1L, "admin@admin.com");
+
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/articles/" + 1 + "/like")
+				.header("Authorization", "Bearer %s".formatted(token.accessToken()))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is2xxSuccessful())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API", responseFields(
+				fieldWithPath("result").type(JsonFieldType.STRING)
+					.description("The result of the operation (e.g., SUCCESS)"),
+				fieldWithPath("data").type(JsonFieldType.NULL).description("Null"),
+				fieldWithPath("error").type(JsonFieldType.NULL).description("Error information (null if no error)"))));
+	}
+
+	@Test
+	@DisplayName("게시글 좋아요 취소 API 실패 - 좋아요 하지 않은 게시물")
+	void articleLikeCancelFailArticleLikeNotFound() throws Exception {
+		Article article = new Article(1L, "title", "설명", "링크", "저자", 0L, LocalDateTime.now(), null);
+		String category = "category1";
+		List<String> tags = List.of("tag1", "tag2", "tag3");
+
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
+
+		tagCommand.createTagsIfNotExists(tags);
+		categoryCommand.createCategoryIfNotExists(category);
+		articleService.createArticle(article,
+			category,
+			tags);
+
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/articles/" + 1 + "/like")
+				.header("Authorization", "Bearer %s".formatted(token.accessToken()))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is4xxClientError())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API", responseFields(
+				fieldWithPath("result").type(JsonFieldType.STRING)
+					.description("The result of the operation (e.g., SUCCESS)"),
+				fieldWithPath("data").type(JsonFieldType.NULL).description("Null"),
+				fieldWithPath("error.code").type(JsonFieldType.STRING).description("E400"),
+				fieldWithPath("error.message").type(JsonFieldType.STRING)
+					.description("validation error has occurred"),
+				fieldWithPath("error.data").type(JsonFieldType.STRING).description("좋아요 하지 않은 게시물입니다."))));
+	}
+
+	@Test
+	@DisplayName("게시글 좋아요 취소 API 실패 - 존재 하지 않는 게시물")
+	void articleLikeCancelFailArticleNotFound() throws Exception {
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
+
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/articles/" + 1 + "/like")
+				.header("Authorization", "Bearer %s".formatted(token.accessToken()))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is4xxClientError())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API", responseFields(
+				fieldWithPath("result").type(JsonFieldType.STRING)
+					.description("The result of the operation (e.g., SUCCESS)"),
+				fieldWithPath("data").type(JsonFieldType.NULL).description("Null"),
+				fieldWithPath("error.code").type(JsonFieldType.STRING).description("E400"),
+				fieldWithPath("error.message").type(JsonFieldType.STRING)
+					.description("validation error has occurred"),
+				fieldWithPath("error.data").type(JsonFieldType.STRING).description("존재 하지 않는 게시물입니다."))));
+	}
+
+	@Test
+	@DisplayName("게시글 좋아요 취소 API 실패 - 로그인 하지 않은 유저")
+	void articleLikeCancelFailUnauthorized() throws Exception {
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/articles/" + 1 + "/like")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isUnauthorized())
 			.andDo(MockMvcRestDocumentationWrapper.document("Article API"));
