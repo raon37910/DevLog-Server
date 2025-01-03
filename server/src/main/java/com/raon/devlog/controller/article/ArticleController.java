@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raon.devlog.component.response.ApiResponse;
 import com.raon.devlog.controller.article.request.ArticleCreateRequest;
 import com.raon.devlog.service.article.ArticleService;
+import com.raon.devlog.service.article.bookmark.ArticleBookMarkService;
 import com.raon.devlog.service.article.like.ArticleLikeService;
 
 import jakarta.validation.Valid;
@@ -22,10 +23,15 @@ public class ArticleController {
 
 	private final ArticleService articleService;
 	private final ArticleLikeService articleLikeService;
+	private final ArticleBookMarkService articleBookMarkService;
 
-	public ArticleController(ArticleService articleService, ArticleLikeService articleLikeService) {
+	public ArticleController(
+		ArticleService articleService,
+		ArticleLikeService articleLikeService,
+		ArticleBookMarkService articleBookMarkService) {
 		this.articleService = articleService;
 		this.articleLikeService = articleLikeService;
+		this.articleBookMarkService = articleBookMarkService;
 	}
 
 	@PostMapping("/api/admin/articles")
@@ -65,6 +71,14 @@ public class ArticleController {
 	public ApiResponse<Void> cancelLikeArticle(@PathVariable Long articleId) {
 		String email = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		articleLikeService.cancelLike(articleId, email);
+
+		return ApiResponse.success(null);
+	}
+
+	@PostMapping("/api/articles/{articleId}/bookMark")
+	public ApiResponse<Void> bookMarkArticle(@PathVariable Long articleId) {
+		String email = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		articleBookMarkService.bookmark(articleId, email);
 
 		return ApiResponse.success(null);
 	}

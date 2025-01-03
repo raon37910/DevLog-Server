@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.raon.devlog.mapper.article.bookmark.ArticleBookMarkMapper">
+    <select id="findByUserIdAndArticleId">
+        SELECT id, userId, articleId, createTime, updateTime
+        FROM BookMark
+        WHERE userId = #{userId}
+          AND articleId = #{articleId}
+    </select>
+
+    <insert id="create" parameterType="com.raon.devlog.mapper.article.bookmark.ArticleBookMarkEntity">
+        INSERT INTO BookMark(id, userId, articleId, createTime, updateTime)
+        VALUES (#{id}, #{userId}, #{articleId}, #{createTime}, #{updateTime})
+    </insert>
+
+    <delete id="delete" parameterType="com.raon.devlog.mapper.article.bookmark.ArticleBookMarkEntity">
+        DELETE
+        FROM BookMark
+        WHERE id = #{id}
+    </delete>
+</mapper>
+
