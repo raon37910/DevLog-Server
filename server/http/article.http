@@ -1,3 +1,8 @@
+# 게시글 조회
+GET localhost:8080/api/articles?page=0&size=2
+
+###
+
 # 게시글 생성
 POST localhost:8080/api/admin/articles
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNTg3MzYzNSwiZXhwIjoxNzM1ODc3MjM1fQ.VReETNaikfH6JU4Mg0bXOVGljGr3IaJQkR-oITXf35QKqIOX68M6b9SYGdvZ0Av6wWcFWGgPk_aaUNaG3Oj3lA
@@ -46,7 +51,8 @@ Content-Type: application/json
 ###
 
 # 게시글 좋아요
-POST localhost:8080/api/articles/2/like
+POST localhost:8080/api/articles/6/like
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNTg3OTkzNCwiZXhwIjoxNzM1ODgzNTM0fQ.2bIaMv8aYvtPOk3WR1-EtGqNE4wadh2P1-LqF4aE8dwQL4gHj-9tj07BEtU4INGv0KKpgtzwBp6vENOigfzW_g
 Content-Type: application/json
 
 ###
