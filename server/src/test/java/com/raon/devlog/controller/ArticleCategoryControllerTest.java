@@ -4,6 +4,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ public class ArticleCategoryControllerTest {
 	}
 
 	@Test
+	@DisplayName("카테고리 리스트 조회 API - 성공")
 	void getAllCategoriesSuccess() throws Exception {
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/category")
 				.contentType(MediaType.APPLICATION_JSON))
