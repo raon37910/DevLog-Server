@@ -36,12 +36,10 @@ public class ArticleLikeService {
 	@Transactional
 	public void like(Long articleId, String email) {
 		UserEntity user = userQuery.findByEmail(email).orElseThrow(
-			() -> new DevlogException(ErrorType.VALIDATION_ERROR, "존재 하지 않는 회원입니다.")
-		);
+			() -> new DevlogException(ErrorType.VALIDATION_ERROR, "존재 하지 않는 회원입니다."));
 
 		ArticleEntity article = articleQuery.findById(articleId).orElseThrow(
-			() -> new DevlogException(ErrorType.VALIDATION_ERROR, "존재 하지 않는 게시글입니다.")
-		);
+			() -> new DevlogException(ErrorType.VALIDATION_ERROR, "존재 하지 않는 게시글입니다."));
 
 		articleLikeQuery.findByUserIdAndArticleId(user.id(), article.id())
 			.ifPresent(articleLikeEntity -> {
@@ -49,5 +47,20 @@ public class ArticleLikeService {
 			});
 
 		articleLikeCommand.create(ArticleLikeEntity.from(user.id(), article.id()));
+	}
+
+	@Transactional
+	public void cancelLike(Long articleId, String email) {
+		UserEntity user = userQuery.findByEmail(email).orElseThrow(
+			() -> new DevlogException(ErrorType.VALIDATION_ERROR, "존재 하지 않는 회원입니다."));
+
+		ArticleEntity article = articleQuery.findById(articleId).orElseThrow(
+			() -> new DevlogException(ErrorType.VALIDATION_ERROR, "존재 하지 않는 게시글입니다.")
+		);
+
+		ArticleLikeEntity articleLike = articleLikeQuery.findByUserIdAndArticleId(user.id(), article.id())
+			.orElseThrow(() -> new DevlogException(ErrorType.VALIDATION_ERROR, "좋아요 하지 않은 게시글입니다."));
+
+		articleLikeCommand.delete(articleLike);
 	}
 }

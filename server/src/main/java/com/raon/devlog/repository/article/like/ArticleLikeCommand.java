@@ -17,4 +17,8 @@ public class ArticleLikeCommand {
 	public void create(ArticleLikeEntity articleLikeEntity) {
 		articleLikeMapper.create(articleLikeEntity);
 	}
+
+	public void delete(ArticleLikeEntity articleLikeEntity) {
+		articleLikeMapper.delete(articleLikeEntity);
+	}
 }
