@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.raon.devlog.mapper.article.ArticleEntity;
+import com.raon.devlog.mapper.article.ArticleSearchResult;
 import com.raon.devlog.mapper.article.category.CategoryEntity;
 import com.raon.devlog.mapper.article.tag.TagEntity;
 import com.raon.devlog.repository.article.ArticleCommand;
@@ -40,6 +41,12 @@ public class ArticleService {
 		this.tagCommand = tagCommand;
 		this.articleQuery = articleQuery;
 		this.articleCommand = articleCommand;
+	}
+
+	@Transactional
+	public List<ArticleSearchResult> getArticleList(ArticleSearchParam articleSearchParam) {
+		List<ArticleSearchResult> articleSearchResults = articleQuery.getList(articleSearchParam);
+		return articleSearchResults;
 	}
 
 	@Transactional

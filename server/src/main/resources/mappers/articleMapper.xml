@@ -47,5 +47,66 @@
         FROM Article
         WHERE id = #{articleId}
     </delete>
+
+    <select id="getList"
+            resultType="com.raon.devlog.mapper.article.ArticleSearchResult"
+            parameterType="com.raon.devlog.service.article.ArticleSearchParam">
+
+        SELECT DISTINCT
+        a.id,
+        a.title,
+        a.author,
+        a.description,
+        a.link,
+        a.views,
+        a.createTime,
+        a.updateTime,
+        c.name AS categoryName,
+        <!-- 태그 리스트를 쉼표로 구분하여 하나의 문자열로 반환 -->
+        GROUP_CONCAT(DISTINCT t.name ORDER BY t.name SEPARATOR ',') AS tags,
+        <!-- 좋아요 여부를 동적으로 계산 -->
+        CASE
+        WHEN #{email} IS NOT NULL AND #{email} != ''
+        AND al.id IS NOT NULL THEN true
+        ELSE false
+        END AS isLiked
+
+        FROM Article a
+        LEFT JOIN Category c ON a.categoryId = c.id
+        LEFT JOIN ArticleTag at ON a.id = at.articleId
+        LEFT JOIN Tag t ON at.tagId = t.id
+        LEFT JOIN ArticleLike al ON a.id = al.articleId
+        AND (
+        #{email} IS NOT NULL
+        AND #{email} != ''
+        AND al.userId = (
+        SELECT id FROM User WHERE email = #{email}
+        ))
+        <where>
+            <!-- Category 조건 -->
+            <if test="category != null and category != ''">
+                AND c.name = #{category}
+            </if>
+            <!-- Bookmarked 조건 -->
+            <if test="bookMarked">
+                <if test="email != null and email != ''">
+                    AND EXISTS (
+                    SELECT 1 FROM BookMark bm
+                    WHERE bm.articleId = a.id AND bm.userId = (
+                    SELECT id FROM User WHERE email = #{email}
+                    )
+                </if>
+            </if>
+        </where>
+        GROUP BY
+        a.id,
+        al.id
+        <if test="tag != null and tag != ''">
+            HAVING FIND_IN_SET(#{tag}, tags) > 0
+        </if>
+        <!-- 페이징 지원 -->
+        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+
+    </select>
 </mapper>
 

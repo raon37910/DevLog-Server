@@ -14,15 +14,6 @@ public record Article(
 	LocalDateTime createTime,
 	LocalDateTime updateTime
 ) {
-
-	public ArticleEntity toEntity() {
-		return new ArticleEntity(id, title, author, description, link, views, null, createTime, updateTime);
-	}
-
-	public ArticleEntity toEntityWith(Long categoryId) {
-		return new ArticleEntity(id, title, author, description, link, views, categoryId, createTime, updateTime);
-	}
-
 	public ArticleEntity toEntityWithCreateTime(Long categoryId, LocalDateTime createTime) {
 		return new ArticleEntity(id, title, author, description, link, views, categoryId, createTime, updateTime);
 	}
