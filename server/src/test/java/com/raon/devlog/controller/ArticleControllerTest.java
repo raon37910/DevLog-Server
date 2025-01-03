@@ -669,4 +669,43 @@ public class ArticleControllerTest {
 			.andExpect(status().isUnauthorized())
 			.andDo(MockMvcRestDocumentationWrapper.document("Article API"));
 	}
+
+	@Test
+	@DisplayName("게시글 조회 API - 성공")
+	void articleReadSuccess() throws Exception {
+		Article article = new Article(1L, "title", "설명", "링크", "저자", 0L, LocalDateTime.now(), null);
+		String category = "category1";
+		List<String> tags = List.of("tag1", "tag2", "tag3");
+
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+
+		tagCommand.createTagsIfNotExists(tags);
+		categoryCommand.createCategoryIfNotExists(category);
+		articleService.createArticle(article,
+			category,
+			tags);
+
+		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/articles")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is2xxSuccessful())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API", responseFields(
+				fieldWithPath("result").type(JsonFieldType.STRING)
+					.description("The result of the operation (e.g., SUCCESS)"),
+				fieldWithPath("data").type(JsonFieldType.ARRAY).description("Category List"),
+				fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description("Article Id"),
+				fieldWithPath("data[].title").type(JsonFieldType.STRING).description("Title"),
+				fieldWithPath("data[].author").type(JsonFieldType.STRING).description("Author"),
+				fieldWithPath("data[].description").type(JsonFieldType.STRING).description("description"),
+				fieldWithPath("data[].link").type(JsonFieldType.STRING).description("Link"),
+				fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("View count"),
+				fieldWithPath("data[].category").type(JsonFieldType.STRING).description("category"),
+				fieldWithPath("data[].tags").type(JsonFieldType.ARRAY).description("tags"),
+				fieldWithPath("data[].liked").type(JsonFieldType.BOOLEAN).description("like YN"),
+				fieldWithPath("data[].createTime").type(JsonFieldType.STRING).description("Create Time"),
+				fieldWithPath("data[].updateTime").type(JsonFieldType.STRING)
+					.description("Update Time or Null")
+					.optional(),
+				fieldWithPath("error").type(JsonFieldType.NULL).description("Error information (null if no error)"))));
+	}
 }
