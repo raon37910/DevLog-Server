@@ -1,14 +1,14 @@
 # 게시글 생성
 POST localhost:8080/api/admin/articles
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNTg2NjA1NCwiZXhwIjoxNzM1ODY5NjU0fQ.ADVMaVj55hgIuIht2vmymBVTc1PtAn6sAfM_2eFQq_FLZ5v2nDnroW6sR3YaAlwisldjfz1oxn387wZvLT6dxA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNTg3MzYzNSwiZXhwIjoxNzM1ODc3MjM1fQ.VReETNaikfH6JU4Mg0bXOVGljGr3IaJQkR-oITXf35QKqIOX68M6b9SYGdvZ0Av6wWcFWGgPk_aaUNaG3Oj3lA
 Content-Type: application/json
 
 {
-  "title": "예제 제목",
-  "author": "작성자 이름",
-  "description": "이것은 예제 설명입니다.",
+  "title": "AWS",
+  "author": "jungmini",
+  "description": "AWS 관련 게시글",
   "link": "https://example.com",
-  "category": "기술",
+  "category": "AWS",
   "tags": [
     "태그1",
     "태그2",

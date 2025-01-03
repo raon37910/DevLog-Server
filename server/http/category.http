@@ -1,0 +1,2 @@
+# 모든 카테고리 조회
+GET localhost:8080/api/category
