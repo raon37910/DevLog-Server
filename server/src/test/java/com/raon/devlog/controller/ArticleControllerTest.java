@@ -27,6 +27,7 @@ import com.raon.devlog.repository.article.category.CategoryCommand;
 import com.raon.devlog.repository.article.tag.TagCommand;
 import com.raon.devlog.service.article.Article;
 import com.raon.devlog.service.article.ArticleService;
+import com.raon.devlog.service.article.like.ArticleLikeService;
 import com.raon.devlog.service.auth.AuthService;
 import com.raon.devlog.service.auth.model.SigninRequestInfo;
 import com.raon.devlog.service.auth.model.Token;
@@ -62,6 +63,9 @@ public class ArticleControllerTest {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private ArticleLikeService articleLikeService;
 
 	@Test
 	@DisplayName("게시글 생성 API - 성공")
@@ -228,7 +232,7 @@ public class ArticleControllerTest {
 	}
 
 	@Test
-	@DisplayName("게시글 삭제 - 성공")
+	@DisplayName("게시글 삭제 API - 성공")
 	void articleDeleteSuccess() throws Exception {
 		Article article = new Article(1L, "title", "설명", "링크", "저자", 0L, LocalDateTime.now(), null);
 		String category = "category1";
@@ -237,7 +241,7 @@ public class ArticleControllerTest {
 		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
 		createAdminRole("admin@admin.com");
 		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
-		
+
 		tagCommand.createTagsIfNotExists(tags);
 		categoryCommand.createCategoryIfNotExists(category);
 		articleService.createArticle(article,
@@ -256,7 +260,7 @@ public class ArticleControllerTest {
 	}
 
 	@Test
-	@DisplayName("게시글 삭제 실패 - 로그인 하지 않은 유저")
+	@DisplayName("게시글 삭제 API 실패 - 로그인 하지 않은 유저")
 	void articleDeleteFailUnauthorized() throws Exception {
 		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
 		createAdminRole("admin@admin.com");
@@ -268,7 +272,7 @@ public class ArticleControllerTest {
 	}
 
 	@Test
-	@DisplayName("게시글 삭제 실패 - 권한 없는 유저")
+	@DisplayName("게시글 삭제 API 실패 - 권한 없는 유저")
 	void articleDeleteFailForbidden() throws Exception {
 		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
 		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
@@ -277,6 +281,106 @@ public class ArticleControllerTest {
 				.header("Authorization", "Bearer %s".formatted(token.accessToken()))
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isForbidden())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API"));
+	}
+
+	@Test
+	@DisplayName("게시글 좋아요 API 성공")
+	void articleLikeSuccess() throws Exception {
+		Article article = new Article(1L, "title", "설명", "링크", "저자", 0L, LocalDateTime.now(), null);
+		String category = "category1";
+		List<String> tags = List.of("tag1", "tag2", "tag3");
+
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
+
+		tagCommand.createTagsIfNotExists(tags);
+		categoryCommand.createCategoryIfNotExists(category);
+		articleService.createArticle(article,
+			category,
+			tags);
+
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/articles/" + 1 + "/like")
+				.header("Authorization", "Bearer %s".formatted(token.accessToken()))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is2xxSuccessful())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API", responseFields(
+				fieldWithPath("result").type(JsonFieldType.STRING)
+					.description("The result of the operation (e.g., SUCCESS)"),
+				fieldWithPath("data").type(JsonFieldType.NULL).description("Null"),
+				fieldWithPath("error").type(JsonFieldType.NULL).description("Error information (null if no error)"))));
+	}
+
+	@Test
+	@DisplayName("게시글 좋아요 API 실패 - 이미 좋아요 한 게시물")
+	void articleLikeFailConflict() throws Exception {
+		Article article = new Article(1L, "title", "설명", "링크", "저자", 0L, LocalDateTime.now(), null);
+		String category = "category1";
+		List<String> tags = List.of("tag1", "tag2", "tag3");
+
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
+
+		tagCommand.createTagsIfNotExists(tags);
+		categoryCommand.createCategoryIfNotExists(category);
+		articleService.createArticle(article,
+			category,
+			tags);
+
+		articleLikeService.like(1L, "admin@admin.com");
+
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/articles/" + 1 + "/like")
+				.header("Authorization", "Bearer %s".formatted(token.accessToken()))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is4xxClientError())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API", responseFields(
+						fieldWithPath("result").type(JsonFieldType.STRING)
+							.description("The result of the operation (e.g., SUCCESS)"),
+						fieldWithPath("data").type(JsonFieldType.NULL).description("Null"),
+						fieldWithPath("error.code").type(JsonFieldType.STRING).description("E400"),
+						fieldWithPath("error.message").type(JsonFieldType.STRING)
+							.description("validation error has occurred"),
+						fieldWithPath("error.data").type(JsonFieldType.STRING).description("이미 좋아요 한 게시물입니다.")
+					)
+				)
+			);
+	}
+
+	@Test
+	@DisplayName("게시글 좋아요 API 실패 - 존재하지 않는 게시물")
+	void articleLikeFailArticleNotFound() throws Exception {
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+		Token token = authService.generateToken(new SigninRequestInfo("admin@admin.com", "admin1234"));
+
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/articles/" + 1 + "/like")
+				.header("Authorization", "Bearer %s".formatted(token.accessToken()))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is4xxClientError())
+			.andDo(MockMvcRestDocumentationWrapper.document("Article API", responseFields(
+						fieldWithPath("result").type(JsonFieldType.STRING)
+							.description("The result of the operation (e.g., SUCCESS)"),
+						fieldWithPath("data").type(JsonFieldType.NULL).description("Null"),
+						fieldWithPath("error.code").type(JsonFieldType.STRING).description("E400"),
+						fieldWithPath("error.message").type(JsonFieldType.STRING)
+							.description("validation error has occurred"),
+						fieldWithPath("error.data").type(JsonFieldType.STRING).description("존재 하지 않는 게시글입니다.")
+					)
+				)
+			);
+	}
+
+	@Test
+	@DisplayName("게시글 좋아요 API 실패 - 로그인 하지 않은 유저")
+	void articleLikeFailUnauthorized() throws Exception {
+		userService.createUser(new CreateUserInfo("admin@admin.com", "admin1234"));
+		createAdminRole("admin@admin.com");
+
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/articles/" + 1 + "/like")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isUnauthorized())
 			.andDo(MockMvcRestDocumentationWrapper.document("Article API"));
 	}
 }
