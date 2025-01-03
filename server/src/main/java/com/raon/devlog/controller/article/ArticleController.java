@@ -60,4 +60,12 @@ public class ArticleController {
 
 		return ApiResponse.success(null);
 	}
+
+	@DeleteMapping("/api/articles/{articleId}/like")
+	public ApiResponse<Void> cancelLikeArticle(@PathVariable Long articleId) {
+		String email = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		articleLikeService.cancelLike(articleId, email);
+
+		return ApiResponse.success(null);
+	}
 }

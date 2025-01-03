@@ -4,6 +4,8 @@ import java.util.Optional;
 
 public interface ArticleLikeMapper {
 	Optional<ArticleLikeEntity> findByUserIdAndArticleId(Long userId, Long articleId);
-	
+
 	void create(ArticleLikeEntity articleLikeEntity);
+
+	void delete(ArticleLikeEntity articleLikeEntity);
 }

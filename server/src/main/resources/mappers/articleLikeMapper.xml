@@ -15,5 +15,11 @@
         INSERT INTO ArticleLike(id, userId, articleId, createTime, updateTime)
         VALUES (#{id}, #{userId}, #{articleId}, #{createTime}, #{updateTime})
     </insert>
+
+    <delete id="delete" parameterType="com.raon.devlog.mapper.article.like.ArticleLikeEntity">
+        DELETE
+        FROM ArticleLike
+        WHERE id = #{id}
+    </delete>
 </mapper>
 

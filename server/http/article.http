@@ -48,3 +48,12 @@ Content-Type: application/json
 # 게시글 좋아요
 POST localhost:8080/api/articles/2/like
 Content-Type: application/json
+
+###
+
+# 게시글 좋아요 취소
+DELETE localhost:8080/api/articles/1/like
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNTg2NjA1NCwiZXhwIjoxNzM1ODY5NjU0fQ.ADVMaVj55hgIuIht2vmymBVTc1PtAn6sAfM_2eFQq_FLZ5v2nDnroW6sR3YaAlwisldjfz1oxn387wZvLT6dxA
+Content-Type: application/json
+
+###
