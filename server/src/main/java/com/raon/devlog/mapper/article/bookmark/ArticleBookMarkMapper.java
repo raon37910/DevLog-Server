@@ -6,4 +6,6 @@ public interface ArticleBookMarkMapper {
 	Optional<ArticleBookMarkEntity> findByUserIdAndArticleId(Long userId, Long articleId);
 
 	void create(ArticleBookMarkEntity articleLikeEntity);
+
+	void delete(ArticleBookMarkEntity articleBookMarkEntity);
 }

@@ -17,4 +17,8 @@ public class ArticleBookMarkCommand {
 	public void create(ArticleBookMarkEntity articleBookMarkEntity) {
 		articleBookMarkMapper.create(articleBookMarkEntity);
 	}
+
+	public void delete(ArticleBookMarkEntity articleBookMarkEntity) {
+		articleBookMarkMapper.delete(articleBookMarkEntity);
+	}
 }
