@@ -26,5 +26,10 @@
         FROM Category
         WHERE id = #{id}
     </select>
+
+    <select id="findAll">
+        SELECT id, name, createTime, updateTime
+        FROM Category
+    </select>
 </mapper>
 

@@ -1,5 +1,7 @@
 package com.raon.devlog.repository.article.category;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.raon.devlog.mapper.article.category.CategoryEntity;
@@ -22,7 +24,7 @@ public class CategoryQuery {
 		return categoryMapper.findBy(name);
 	}
 
-	public CategoryEntity findById(Long id) {
-		return categoryMapper.findById(id);
+	public List<CategoryEntity> findAll() {
+		return categoryMapper.findAll();
 	}
 }
