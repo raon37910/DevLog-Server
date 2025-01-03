@@ -45,4 +45,19 @@ public class ArticleBookMarkService {
 
 		articleBookMarkCommand.create(ArticleBookMarkEntity.from(user.id(), article.id()));
 	}
+
+	@Transactional
+	public void cancelBookmark(Long articleId, String email) {
+		UserEntity user = userQuery.findByEmail(email).orElseThrow(
+			() -> new DevlogException(ErrorType.VALIDATION_ERROR, "존재 하지 않는 회원입니다."));
+
+		ArticleEntity article = articleQuery.findById(articleId).orElseThrow(
+			() -> new DevlogException(ErrorType.VALIDATION_ERROR, "존재 하지 않는 게시글입니다."));
+
+		ArticleBookMarkEntity bookMark = articleBookMarkQuery.findByUserIdAndArticleId(user.id(),
+				article.id())
+			.orElseThrow(() -> new DevlogException(ErrorType.VALIDATION_ERROR, "북마크 정보가 존재하지 않습니다."));
+
+		articleBookMarkCommand.delete(bookMark);
+	}
 }

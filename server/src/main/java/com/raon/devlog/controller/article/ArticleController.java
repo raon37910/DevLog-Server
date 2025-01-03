@@ -82,4 +82,12 @@ public class ArticleController {
 
 		return ApiResponse.success(null);
 	}
+
+	@DeleteMapping("/api/articles/{articleId}/bookMark")
+	public ApiResponse<Void> cancelBookMarkArticle(@PathVariable Long articleId) {
+		String email = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		articleBookMarkService.cancelBookmark(articleId, email);
+
+		return ApiResponse.success(null);
+	}
 }
